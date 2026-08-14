@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แผนการเงินและการลงทุน 2569</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A1420">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Financial Plan 2569">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1420;
+    --surface:#101E2E;
+    --surface-2:#152840;
+    --border:#1E3348;
+    --text:#EAF2F5;
+    --text-dim:#7C93A6;
+    --debt:#E15B4B;
+    --debt-dim:#5A2F2B;
+    --growth:#2ECC8F;
+    --growth-dim:#1E4A3B;
+    --gold:#E8B94D;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Sarabun', sans-serif;
+    min-height:100vh;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:640px; margin:0 auto;}
+
+  header{margin-bottom:28px;}
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.12em;
+    color:var(--text-dim);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+  h1{
+    font-family:'Kanit', sans-serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.3;
+    margin-bottom:4px;
+  }
+  .sub{color:var(--text-dim); font-size:14px;}
+
+  .handoff{
+    margin-top:22px;
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:18px 18px 16px;
+  }
+  .handoff-row{margin-bottom:14px;}
+  .handoff-row:last-child{margin-bottom:0;}
+  .handoff-label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:12px; color:var(--text-dim); margin-bottom:6px;
+    font-family:'Kanit', sans-serif;
+  }
+  .handoff-label b{color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;}
+  .track{
+    height:8px; border-radius:6px; background:var(--surface-2);
+    overflow:hidden; position:relative;
+  }
+  .fill{height:100%; border-radius:6px; transition:width .5s ease;}
+  .fill.debt{background:linear-gradient(90deg, var(--debt), #c94636); box-shadow:0 0 10px rgba(225,91,75,.4);}
+  .fill.growth{background:linear-gradient(90deg, #1e9d6e, var(--growth)); box-shadow:0 0 10px rgba(46,204,143,.35);}
+  .baton{
+    text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px;
+    color:var(--gold); letter-spacing:.08em; margin:10px 0 4px; opacity:.85;
+  }
+
+  .phase{margin-top:26px;}
+  .phase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
+  .phase-num{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px; color:var(--bg); background:var(--gold);
+    width:22px; height:22px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:600; flex-shrink:0;
+  }
+  .phase-title{font-family:'Kanit', sans-serif; font-weight:600; font-size:16px;}
+  .phase-dates{font-size:12px; color:var(--text-dim); margin-left:auto; font-family:'JetBrains Mono',monospace;}
+
+  .card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:6px 4px;
+    margin-bottom:12px;
+    overflow:hidden;
+  }
+  .card-title{
+    font-size:13px; color:var(--text-dim); padding:10px 14px 4px;
+    display:flex; justify-content:space-between; align-items:center;
+  }
+  .card-title span.tag{
+    font-family:'JetBrains Mono',monospace; font-size:10px;
+    color:var(--gold); border:1px solid rgba(232,185,77,.35);
+    padding:2px 6px; border-radius:20px;
+  }
+
+  .item{
+    display:flex; align-items:center; gap:12px;
+    padding:10px 14px;
+    border-top:1px solid var(--border);
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .item:first-of-type{border-top:none;}
+  .box{
+    width:20px; height:20px; border-radius:6px;
+    border:1.5px solid var(--text-dim);
+    flex-shrink:0; display:flex; align-items:center; justify-content:center;
+    transition:all .15s ease;
+  }
+  .box svg{opacity:0; transform:scale(.5); transition:all .15s ease;}
+  .item.checked .box{background:var(--growth); border-color:var(--growth);}
+  .item.checked .box svg{opacity:1; transform:scale(1);}
+  .item.checked .item-label{color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--border);}
+  .item.debt-item.checked .box{background:var(--debt); border-color:var(--debt);}
+
+  .item-label{font-size:14px; flex:1; line-height:1.4;}
+  .item-sub{font-size:11px; color:var(--text-dim); margin-top:2px;}
+  .item-amt{
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
+    white-space:nowrap;
+  }
+  .item-amt.out{color:var(--debt);}
+  .item-amt.in{color:var(--growth);}
+  .item-amt.neutral{color:var(--text-dim);}
+
+  .status-line{
+    padding:12px 14px; border-top:1px dashed var(--border);
+    font-size:13px; display:flex; justify-content:space-between; align-items:center;
+  }
+  .status-line b{font-family:'JetBrains Mono',monospace; font-size:14px;}
+
+  .alloc{margin-top:2px; padding:4px 14px 12px;}
+  .alloc-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:7px 0; border-top:1px solid var(--border); font-size:13px;
+  }
+  .alloc-row:first-child{border-top:none;}
+  .alloc-name{font-family:'Kanit',sans-serif; font-weight:500;}
+  .alloc-pct{color:var(--text-dim); font-size:11px; margin-left:6px;}
+  .alloc-val{font-family:'JetBrains Mono',monospace; color:var(--growth);}
+
+  .finale{
+    margin-top:28px;
+    background:linear-gradient(160deg, var(--surface-2), var(--surface));
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+  }
+  .finale-num{
+    font-family:'Kanit',sans-serif; font-weight:700; font-size:34px;
+    color:var(--growth); line-height:1.1;
+  }
+  .finale-cap{font-size:12px; color:var(--text-dim); margin-top:4px;}
+  .finale-goal{
+    margin-top:14px; padding-top:14px; border-top:1px dashed var(--border);
+    font-size:12px; color:var(--text-dim); text-align:left; line-height:1.9;
+  }
+  .finale-goal b{color:var(--gold); font-family:'JetBrains Mono',monospace;}
+
+  .reset-row{text-align:center; margin-top:22px;}
+  .reset-btn{
+    background:none; border:1px solid var(--border); color:var(--text-dim);
+    font-family:'Sarabun',sans-serif; font-size:12px; padding:8px 16px;
+    border-radius:20px; cursor:pointer;
+  }
+  .reset-btn:active{background:var(--surface);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">Financial Plan · 2569</div>
+    <h1>แผนการเงินและการลงทุน<br>ส.ค. – ธ.ค. 2569</h1>
+    <div class="sub">แตะรายการเพื่อติ๊กเมื่อทำสำเร็จ — บันทึกอัตโนมัติ</div>
+
+    <div class="handoff">
+      <div class="handoff-row">
+        <div class="handoff-label"><span>หนี้สินคงเหลือ</span><b id="debtLabel">2,942.22 บาท</b></div>
+        <div class="track"><div class="fill debt" id="debtBar" style="width:0%"></div></div>
+      </div>
+      <div class="baton">⟶ 5 ม.ค. 70 หนี้เป็น 0 · เงินต้นสะสมเต็มพอร์ต ⟶</div>
+      <div class="handoff-row">
+        <div class="handoff-label"><span>เงินต้นสะสมพอร์ต</span><b id="portLabel">0 / 46,000 บาท</b></div>
+        <div class="track"><div class="fill growth" id="portBar" style="width:0%"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- PHASE 1: DEBT -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">1</div>
+      <div class="phase-title">ผ่อนชำระหนี้ตามรอบระบบ</div>
+      <div class="phase-dates">ก.ย. 69 – ม.ค. 70</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">แผนผ่อนชำระ 5 งวด <span class="tag">ไม่รีบโปะ</span></div>
+      <div class="item debt-item" data-id="debt-1" data-amt="950.00"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 1</div><div class="item-sub">จ่ายไม่เกิน 5 ก.ย. 69</div></div><div class="item-amt out">−950.00</div></div>
+      <div class="item debt-item" data-id="debt-2" data-amt="499.38"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 2</div><div class="item-sub">จ่ายไม่เกิน 5 ต.ค. 69</div></div><div class="item-amt out">−499.38</div></div>
+      <div class="item debt-item" data-id="debt-3" data-amt="499.38"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 3</div><div class="item-sub">จ่ายไม่เกิน 5 พ.ย. 69</div></div><div class="item-amt out">−499.38</div></div>
+      <div class="item debt-item" data-id="debt-4" data-amt="499.38"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 4</div><div class="item-sub">จ่ายไม่เกิน 5 ธ.ค. 69</div></div><div class="item-amt out">−499.38</div></div>
+      <div class="item debt-item" data-id="debt-5" data-amt="494.08"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 5 (งวดสุดท้าย)</div><div class="item-sub">จ่ายไม่เกิน 5 ม.ค. 70</div></div><div class="item-amt out">−494.08</div></div>
+      <div class="status-line"><span>🎯 เมื่อครบทุกงวด</span><b style="color:var(--growth)">หนี้ = 0.00 บาท</b></div>
+    </div>
+  </section>
+
+  <!-- PHASE 2: PORTFOLIO -->
+  <section class="phase">
+    <div class="phase-head">
+      <div class="phase-num">2</div>
+      <div class="phase-title">ตารางเติมเงินสะสมพอร์ต</div>
+      <div class="phase-dates">17 ส.ค. – 16 ธ.ค.</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">งวดเติมเงิน <span class="tag">9 รอบ</span></div>
+      <div class="item port-item" data-id="port-1" data-cum="10000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">17 ส.ค. 69 — ก้อนประเดิม</div><div class="item-sub">สะสม 10,000 บาท</div></div><div class="item-amt in">+10,000</div></div>
+      <div class="item port-item" data-id="port-2" data-cum="14000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ก.ย. 69</div><div class="item-sub">สะสม 14,000 บาท</div></div><div class="item-amt in">+4,000</div></div>
+      <div class="item port-item" data-id="port-3" data-cum="19000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ก.ย. 69</div><div class="item-sub">สะสม 19,000 บาท</div></div><div class="item-amt in">+5,000</div></div>
+      <div class="item port-item" data-id="port-4" data-cum="23000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ต.ค. 69</div><div class="item-sub">สะสม 23,000 บาท</div></div><div class="item-amt in">+4,000</div></div>
+      <div class="item port-item" data-id="port-5" data-cum="28000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ต.ค. 69</div><div class="item-sub">สะสม 28,000 บาท</div></div><div class="item-amt in">+5,000</div></div>
+      <div class="item port-item" data-id="port-6" data-cum="32000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 พ.ย. 69</div><div class="item-sub">สะสม 32,000 บาท</div></div><div class="item-amt in">+4,000</div></div>
+      <div class="item port-item" data-id="port-7" data-cum="37000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 พ.ย. 69</div><div class="item-sub">สะสม 37,000 บาท</div></div><div class="item-amt in">+5,000</div></div>
+      <div class="item port-item" data-id="port-8" data-cum="41000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ธ.ค. 69</div><div class="item-sub">สะสม 41,000 บาท</div></div><div class="item-amt in">+4,000</div></div>
+      <div class="item port-item" data-id="port-9" data-cum="46000"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ธ.ค. 69 — งวดสุดท้าย</div><div class="item-sub">สะสม 46,000 บาท</div></div><div class="item-amt in">+5,000</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">สัดส่วนการลงทุน · งวด 4,000 บาท <span class="tag">1 ของเดือน</span></div>
+      <div class="alloc">
+        <div class="alloc-row"><div><span class="alloc-name">SCHD</span><span class="alloc-pct">25%</span></div><div class="alloc-val">1,000</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">VXUS</span><span class="alloc-pct">25%</span></div><div class="alloc-val">1,000</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">MSFT</span><span class="alloc-pct">10%</span></div><div class="alloc-val">400</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">NVDA</span><span class="alloc-pct">10%</span></div><div class="alloc-val">400</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">GOOGL</span><span class="alloc-pct">10%</span></div><div class="alloc-val">400</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">TSM</span><span class="alloc-pct">10%</span></div><div class="alloc-val">400</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">AAPL</span><span class="alloc-pct">10%</span></div><div class="alloc-val">400</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">สัดส่วนการลงทุน · งวด 5,000 บาท <span class="tag">16–17 ของเดือน</span></div>
+      <div class="alloc">
+        <div class="alloc-row"><div><span class="alloc-name">SCHD</span><span class="alloc-pct">25%</span></div><div class="alloc-val">1,250</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">VXUS</span><span class="alloc-pct">25%</span></div><div class="alloc-val">1,250</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">MSFT</span><span class="alloc-pct">10%</span></div><div class="alloc-val">500</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">NVDA</span><span class="alloc-pct">10%</span></div><div class="alloc-val">500</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">GOOGL</span><span class="alloc-pct">10%</span></div><div class="alloc-val">500</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">TSM</span><span class="alloc-pct">10%</span></div><div class="alloc-val">500</div></div>
+        <div class="alloc-row"><div><span class="alloc-name">AAPL</span><span class="alloc-pct">10%</span></div><div class="alloc-val">500</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="finale">
+    <div class="finale-num" id="finaleNum">0%</div>
+    <div class="finale-cap">แผนสำเร็จแล้ว ณ ตอนนี้</div>
+    <div class="finale-goal">
+      🎯 เป้าหมายสิ้นปี 2569<br>
+      หนี้สิน: <b>0.00 บาท</b> (หมดเกลี้ยง 100%)<br>
+      เงินต้นสะสม: <b>46,000 บาท</b><br>
+      ประมาณการมูลค่าพอร์ตรวมผลตอบแทน: <b>~47,300 – 50,000+ บาท</b>
+    </div>
+  </div>
+
+  <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ทั้งหมด</button></div>
+
+</div>
+
+<script>
+const STORAGE_KEY = 'financial-plan-2569-checklist';
+const items = Array.from(document.querySelectorAll('.item[data-id]'));
+const debtItems = document.querySelectorAll('.debt-item');
+const portItems = document.querySelectorAll('.port-item');
+const debtTotal = 2942.22;
+const portGoal = 46000;
+
+let state = {};
+
+function fmt(n){
+  return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function computeAndRender(){
+  // debt bar: sum of checked debt amounts
+  let paidDebt = 0;
+  debtItems.forEach(el=>{
+    if(state[el.dataset.id]) paidDebt += parseFloat(el.dataset.amt);
+  });
+  const remaining = Math.max(0, debtTotal - paidDebt);
+  const debtPct = Math.min(100, (paidDebt/debtTotal)*100);
+  document.getElementById('debtBar').style.width = (100-debtPct) + '%';
+  document.getElementById('debtLabel').textContent = fmt(remaining) + ' บาท';
+
+  // portfolio bar: highest checked cumulative value among port-items
+  let cum = 0;
+  portItems.forEach(el=>{
+    if(state[el.dataset.id]) cum = Math.max(cum, parseInt(el.dataset.cum));
+  });
+  const portPct = Math.min(100, (cum/portGoal)*100);
+  document.getElementById('portBar').style.width = portPct + '%';
+  document.getElementById('portLabel').textContent = cum.toLocaleString() + ' / ' + portGoal.toLocaleString() + ' บาท';
+
+  // overall finale %
+  const totalItems = items.length;
+  const checkedCount = items.filter(el=>state[el.dataset.id]).length;
+  const overall = totalItems ? Math.round((checkedCount/totalItems)*100) : 0;
+  document.getElementById('finaleNum').textContent = overall + '%';
+}
+
+function applyVisual(){
+  items.forEach(el=>{
+    if(state[el.dataset.id]) el.classList.add('checked');
+    else el.classList.remove('checked');
+  });
+  computeAndRender();
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ state = JSON.parse(raw); }
+  }catch(e){ state = {}; }
+  applyVisual();
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }catch(e){ console.error('save failed', e); }
+}
+
+items.forEach(el=>{
+  el.addEventListener('click', ()=>{
+    const id = el.dataset.id;
+    state[id] = !state[id];
+    applyVisual();
+    saveState();
+  });
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('ล้างเช็คลิสต์ทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  state = {};
+  applyVisual();
+  saveState();
+});
+
+loadState();
+
+// PWA: register service worker for offline/installable support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+// Ask the browser not to auto-evict this site's storage when device space is low
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().catch(()=>{});
+}
+</script>
+</body>
+</html>
