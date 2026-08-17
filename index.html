@@ -71,6 +71,17 @@
     font-family:'Kanit', sans-serif;
   }
   .handoff-label b{color:var(--text); font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;}
+  .goal-input{
+    width:70px; text-align:right;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:6px; color:var(--text);
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
+    padding:3px 6px; -moz-appearance:textfield;
+  }
+  .goal-input::-webkit-outer-spin-button, .goal-input::-webkit-inner-spin-button{
+    -webkit-appearance:none; margin:0;
+  }
+  .goal-input:focus{outline:1.5px solid var(--gold); border-color:var(--gold);}
   .track{
     height:8px; border-radius:6px; background:var(--surface-2);
     overflow:hidden; position:relative;
@@ -168,22 +179,22 @@
     padding:2px 14px 12px 46px;
   }
   .alloc-mini-head{
-    display:grid; grid-template-columns:1fr 44px 80px;
-    gap:4px; font-size:9px; color:var(--text-dim); opacity:.7;
+    display:grid; grid-template-columns:1fr 48px 90px;
+    gap:6px; font-size:9px; color:var(--text-dim); opacity:.7;
     padding-bottom:4px; border-bottom:1px solid var(--border); margin-bottom:2px;
     font-family:'JetBrains Mono',monospace; letter-spacing:.04em;
   }
   .alloc-mini-head span:not(:first-child){text-align:right;}
   .alloc-mini-row{
-    display:grid; grid-template-columns:1fr 44px 80px;
-    gap:4px; align-items:center;
+    display:grid; grid-template-columns:1fr 48px 90px;
+    gap:6px; align-items:center;
     padding:4px 0; font-size:12px;
     border-top:1px dashed rgba(30,51,72,.6);
   }
   .alloc-mini-row:first-of-type{border-top:none;}
   .alloc-mini-name{font-family:'Kanit',sans-serif; font-weight:500;}
   .alloc-mini-pct{color:var(--text-dim); font-size:11px; text-align:right;}
-  .alloc-mini-usd{font-family:'JetBrains Mono',monospace; color:var(--growth); text-align:right;}
+  .alloc-mini-usd{font-family:'JetBrains Mono',monospace; color:var(--gold); text-align:right; font-weight:500;}
 
   .status-line{
     padding:12px 14px; border-top:1px dashed var(--border);
@@ -244,7 +255,10 @@
       </div>
       <div class="baton">⟶ 5 ม.ค. 70 หนี้เป็น 0 · เงินต้นสะสมเต็มพอร์ต ⟶</div>
       <div class="handoff-row">
-        <div class="handoff-label"><span>เงินต้นสะสมพอร์ต</span><b id="portLabel">0 / 46,000 USD</b></div>
+        <div class="handoff-label">
+          <span>เงินต้นสะสมพอร์ต</span>
+          <span><b id="portCumLabel">0</b> / <input type="number" id="portGoalInput" class="goal-input" value="1200" step="0.01" inputmode="decimal"> USD</span>
+        </div>
         <div class="track"><div class="fill growth" id="portBar" style="width:0%"></div></div>
       </div>
     </div>
@@ -280,39 +294,39 @@
     <div class="card">
       <div class="card-title">งวดเติมเงิน <span class="tag">แก้ไขได้ · คำนวณสัดส่วนอัตโนมัติ</span></div>
       <div class="port-block" data-id="port-1">
-        <div class="item port-item" data-id="port-1"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">17 ส.ค. 69 — ก้อนประเดิม</div><div class="item-sub" id="cum-port-1">สะสม 10,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-1" value="10000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-1"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">17 ส.ค. 69 — ก้อนประเดิม</div><div class="item-sub" id="cum-port-1">สะสม 300 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-1" value="300" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-1"></div>
       </div>
       <div class="port-block" data-id="port-2">
-        <div class="item port-item" data-id="port-2"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ก.ย. 69</div><div class="item-sub" id="cum-port-2">สะสม 14,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-2" value="4000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-2"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ก.ย. 69</div><div class="item-sub" id="cum-port-2">สะสม 400 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-2" value="100" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-2"></div>
       </div>
       <div class="port-block" data-id="port-3">
-        <div class="item port-item" data-id="port-3"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ก.ย. 69</div><div class="item-sub" id="cum-port-3">สะสม 19,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-3" value="5000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-3"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ก.ย. 69</div><div class="item-sub" id="cum-port-3">สะสม 525 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-3" value="125" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-3"></div>
       </div>
       <div class="port-block" data-id="port-4">
-        <div class="item port-item" data-id="port-4"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ต.ค. 69</div><div class="item-sub" id="cum-port-4">สะสม 23,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-4" value="4000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-4"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ต.ค. 69</div><div class="item-sub" id="cum-port-4">สะสม 625 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-4" value="100" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-4"></div>
       </div>
       <div class="port-block" data-id="port-5">
-        <div class="item port-item" data-id="port-5"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ต.ค. 69</div><div class="item-sub" id="cum-port-5">สะสม 28,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-5" value="5000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-5"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ต.ค. 69</div><div class="item-sub" id="cum-port-5">สะสม 750 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-5" value="125" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-5"></div>
       </div>
       <div class="port-block" data-id="port-6">
-        <div class="item port-item" data-id="port-6"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 พ.ย. 69</div><div class="item-sub" id="cum-port-6">สะสม 32,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-6" value="4000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-6"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 พ.ย. 69</div><div class="item-sub" id="cum-port-6">สะสม 850 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-6" value="100" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-6"></div>
       </div>
       <div class="port-block" data-id="port-7">
-        <div class="item port-item" data-id="port-7"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 พ.ย. 69</div><div class="item-sub" id="cum-port-7">สะสม 37,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-7" value="5000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-7"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 พ.ย. 69</div><div class="item-sub" id="cum-port-7">สะสม 975 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-7" value="125" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-7"></div>
       </div>
       <div class="port-block" data-id="port-8">
-        <div class="item port-item" data-id="port-8"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ธ.ค. 69</div><div class="item-sub" id="cum-port-8">สะสม 41,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-8" value="4000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-8"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ธ.ค. 69</div><div class="item-sub" id="cum-port-8">สะสม 1,075 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-8" value="100" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-8"></div>
       </div>
       <div class="port-block" data-id="port-9">
-        <div class="item port-item" data-id="port-9"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ธ.ค. 69 — งวดสุดท้าย</div><div class="item-sub" id="cum-port-9">สะสม 46,000 USD</div></div><div class="amt-wrap in"><span>+ $</span><input type="number" class="amt-input" id="amt-port-9" value="5000" step="1" inputmode="decimal"></div></div>
+        <div class="item port-item" data-id="port-9"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ธ.ค. 69 — งวดสุดท้าย</div><div class="item-sub" id="cum-port-9">สะสม 1,200 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-9" value="125" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-9"></div>
       </div>
     </div>
@@ -320,7 +334,7 @@
     <div class="card">
       <div class="card-title">สูตรคำนวณสัดส่วน <span class="tag">ETF 50% : หุ้น 50%</span></div>
       <div class="alloc" style="font-size:12px; color:var(--text-dim); line-height:1.9; padding-top:0;">
-        ETF (SCHD 25% + VXUS 25%) และหุ้นรายตัว 5 ตัว (MSFT · NVDA · GOOGL · TSM · AAPL) ตัวละ 10% เท่ากัน — พิมพ์ยอดเงิน (USD) ในแต่ละงวดด้านบน ระบบคำนวณสัดส่วนให้อัตโนมัติทันที ไม่ต้องแปลงค่าเงินอีกต่อไป
+        ETF (SCHD 25% + VXUS 25%) และหุ้นรายตัว 5 ตัว (MSFT · NVDA · GOOGL · TSM · AAPL) ตัวละ 10% เท่ากัน — พิมพ์ยอดเงินในแต่ละงวดด้านบน ระบบคำนวณให้อัตโนมัติทันที
       </div>
     </div>
   </section>
@@ -331,18 +345,19 @@
     <div class="finale-goal">
       🎯 เป้าหมายสิ้นปี 2569<br>
       หนี้สิน: <b>0.00 บาท</b> (หมดเกลี้ยง 100%)<br>
-      เงินต้นสะสม: <b>46,000 USD</b><br>
-      ประมาณการมูลค่าพอร์ตรวมผลตอบแทน: <b>~47,300 – 50,000+ บาท</b>
+      เงินต้นสะสม: <b>1,200 USD</b><br>
+      ประมาณการมูลค่าพอร์ตรวมผลตอบแทน: <b>~1,230 – 1,300+ USD</b>
     </div>
   </div>
 
-  <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ทั้งหมด</button></div>
+  <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ + ตัวเลขทั้งหมด (คืนค่าเริ่มต้น)</button></div>
 
 </div>
 
 <script>
 const STORAGE_KEY = 'financial-plan-2569-checklist';
 const AMT_KEY = 'financial-plan-2569-amounts';
+const GOAL_KEY = 'financial-plan-2569-goal';
 const items = Array.from(document.querySelectorAll('.item[data-id]'));
 const debtIds = ['debt-1','debt-2','debt-3','debt-4','debt-5'];
 const portIds = ['port-1','port-2','port-3','port-4','port-5','port-6','port-7','port-8','port-9'];
@@ -358,7 +373,7 @@ const ASSETS = [
 ];
 
 let state = {};   // checked state per item id
-let amounts = {}; // current amount per item id (USD)
+let amounts = {}; // current amount per item id
 
 function fmt2(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
 function fmt0(n){ return Math.round(n).toLocaleString(); }
@@ -404,14 +419,15 @@ function recomputePortfolio(){
     const amt = getAmt(id, 0);
     running += amt;
     const subEl = document.getElementById('cum-' + id);
-    if(subEl) subEl.textContent = 'สะสม ' + fmt0(running) + ' USD';
+    if(subEl) subEl.textContent = 'สะสม ' + fmtUsd(running) + ' USD';
     if(state[id]) checkedCum = running;
     renderAllocFor(id);
   });
-  const goal = running; // total of all 9 rounds = target
+  const goalInput = document.getElementById('portGoalInput');
+  const goal = parseFloat(goalInput.value) || 0;
   const pct = goal ? Math.min(100, (checkedCum/goal)*100) : 0;
   document.getElementById('portBar').style.width = pct + '%';
-  document.getElementById('portLabel').textContent = fmt0(checkedCum) + ' / ' + fmt0(goal) + ' USD';
+  document.getElementById('portCumLabel').textContent = fmtUsd(checkedCum);
 }
 
 function computeAndRender(){
@@ -446,6 +462,10 @@ function loadState(){
     if(amounts[id] !== undefined){ inp.value = amounts[id]; }
     else { amounts[id] = inp.value; }
   });
+  try{
+    const rawGoal = localStorage.getItem(GOAL_KEY);
+    if(rawGoal !== null){ document.getElementById('portGoalInput').value = rawGoal; }
+  }catch(e){}
   applyVisual();
 }
 
@@ -454,6 +474,9 @@ function saveState(){
 }
 function saveAmounts(){
   try{ localStorage.setItem(AMT_KEY, JSON.stringify(amounts)); }catch(e){ console.error('save failed', e); }
+}
+function saveGoal(){
+  try{ localStorage.setItem(GOAL_KEY, document.getElementById('portGoalInput').value); }catch(e){}
 }
 
 items.forEach(el=>{
@@ -476,11 +499,26 @@ document.querySelectorAll('.amt-input').forEach(inp=>{
   });
 });
 
+const goalInputEl = document.getElementById('portGoalInput');
+goalInputEl.addEventListener('click', (ev)=> ev.stopPropagation());
+goalInputEl.addEventListener('input', ()=>{
+  computeAndRender();
+  saveGoal();
+});
+
 document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(!confirm('ล้างเช็คลิสต์ทั้งหมด? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  if(!confirm('ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมด กลับเป็นค่าเริ่มต้น? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
   state = {};
+  amounts = {};
+  document.querySelectorAll('.amt-input').forEach(inp=>{
+    inp.value = inp.defaultValue;
+    amounts[inp.id.replace('amt-', '')] = inp.value;
+  });
+  goalInputEl.value = goalInputEl.defaultValue;
   applyVisual();
   saveState();
+  saveAmounts();
+  saveGoal();
 });
 
 loadState();
