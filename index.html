@@ -15,7 +15,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-<!-- 1. ดึง Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -42,7 +41,6 @@
     padding:24px 16px 60px;
   }
   .wrap{max-width:640px; margin:0 auto;}
-
   header{margin-bottom:28px;}
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
@@ -60,7 +58,6 @@
     margin-bottom:4px;
   }
   .sub{color:var(--text-dim); font-size:14px;}
-
   .handoff{
     margin-top:22px;
     background:var(--surface);
@@ -98,7 +95,6 @@
     text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px;
     color:var(--gold); letter-spacing:.08em; margin:10px 0 4px; opacity:.85;
   }
-
   .phase{margin-top:26px;}
   .phase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
   .phase-num{
@@ -110,7 +106,6 @@
   }
   .phase-title{font-family:'Kanit', sans-serif; font-weight:600; font-size:16px;}
   .phase-dates{font-size:12px; color:var(--text-dim); margin-left:auto; font-family:'JetBrains Mono',monospace;}
-
   .card{
     background:var(--surface);
     border:1px solid var(--border);
@@ -128,7 +123,6 @@
     color:var(--gold); border:1px solid rgba(232,185,77,.35);
     padding:2px 6px; border-radius:20px;
   }
-
   .item{
     display:flex; align-items:center; gap:12px;
     padding:10px 14px;
@@ -148,17 +142,8 @@
   .item.checked .box svg{opacity:1; transform:scale(1);}
   .item.checked .item-label{color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--border);}
   .item.debt-item.checked .box{background:var(--debt); border-color:var(--debt);}
-
   .item-label{font-size:14px; flex:1; line-height:1.4;}
   .item-sub{font-size:11px; color:var(--text-dim); margin-top:2px;}
-  .item-amt{
-    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
-    white-space:nowrap;
-  }
-  .item-amt.out{color:var(--debt);}
-  .item-amt.in{color:var(--growth);}
-  .item-amt.neutral{color:var(--text-dim);}
-
   .amt-wrap{
     display:flex; align-items:center; gap:2px;
     font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
@@ -176,13 +161,9 @@
     -webkit-appearance:none; margin:0;
   }
   .amt-input:focus{outline:1.5px solid var(--gold); border-color:var(--gold);}
-
   .port-block{border-top:1px solid var(--border);}
   .port-block:first-child{border-top:none;}
-  .port-block .item{border-top:none;}
-  .alloc-mini{
-    padding:2px 14px 12px 46px;
-  }
+  .alloc-mini{padding:2px 14px 12px 46px;}
   .alloc-mini-head{
     display:grid; grid-template-columns:1fr 48px 90px;
     gap:6px; font-size:9px; color:var(--text-dim); opacity:.7;
@@ -200,23 +181,12 @@
   .alloc-mini-name{font-family:'Kanit',sans-serif; font-weight:500;}
   .alloc-mini-pct{color:var(--text-dim); font-size:11px; text-align:right;}
   .alloc-mini-usd{font-family:'JetBrains Mono',monospace; color:var(--gold); text-align:right; font-weight:500;}
-
   .status-line{
     padding:12px 14px; border-top:1px dashed var(--border);
     font-size:13px; display:flex; justify-content:space-between; align-items:center;
   }
   .status-line b{font-family:'JetBrains Mono',monospace; font-size:14px;}
-
   .alloc{margin-top:2px; padding:4px 14px 12px;}
-  .alloc-row{
-    display:flex; justify-content:space-between; align-items:center;
-    padding:7px 0; border-top:1px solid var(--border); font-size:13px;
-  }
-  .alloc-row:first-child{border-top:none;}
-  .alloc-name{font-family:'Kanit',sans-serif; font-weight:500;}
-  .alloc-pct{color:var(--text-dim); font-size:11px; margin-left:6px;}
-  .alloc-val{font-family:'JetBrains Mono',monospace; color:var(--growth);}
-
   .finale{
     margin-top:28px;
     background:linear-gradient(160deg, var(--surface-2), var(--surface));
@@ -235,7 +205,6 @@
     font-size:12px; color:var(--text-dim); text-align:left; line-height:1.9;
   }
   .finale-goal b{color:var(--gold); font-family:'JetBrains Mono',monospace;}
-
   .reset-row{text-align:center; margin-top:22px;}
   .reset-btn{
     background:none; border:1px solid var(--border); color:var(--text-dim);
@@ -269,7 +238,6 @@
     </div>
   </header>
 
-  <!-- PHASE 1: DEBT -->
   <section class="phase">
     <div class="phase-head">
       <div class="phase-num">1</div>
@@ -288,7 +256,6 @@
     </div>
   </section>
 
-  <!-- PHASE 2: PORTFOLIO -->
   <section class="phase">
     <div class="phase-head">
       <div class="phase-num">2</div>
@@ -357,14 +324,186 @@
 
   <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ + ตัวเลขทั้งหมด (คืนค่าเริ่มต้น)</button></div>
 
-</div>
-
+          </div>
 <script>
-// 2. ชุดตั้งค่า Firebase Config ของคุณ
 const firebaseConfig = {
   apiKey: "AIzaSyC4zsLz5rGQ2XLRJ4Im2OowhDhfV-idIbo",
   authDomain: "project-3318142053107447191.firebaseapp.com",
   databaseURL: "https://project-3318142053107447191-default-rtdb.asia-southeast1.firebasedatabase.app",
   projectId: "project-3318142053107447191",
   storageBucket: "project-3318142053107447191.firebasestorage.app",
-  
+  messagingSenderId: "39403402202",
+  appId: "1:39403402202:web:a1979d39a0a5617a3406e3"
+};
+
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+const dbRef = database.ref('financial-plan-2569');
+
+const items = Array.from(document.querySelectorAll('.item[data-id]'));
+const debtIds = ['debt-1','debt-2','debt-3','debt-4','debt-5'];
+const portIds = ['port-1','port-2','port-3','port-4','port-5','port-6','port-7','port-8','port-9'];
+
+const ASSETS = [
+  {key:'SCHD', pct:0.25}, {key:'VXUS', pct:0.25},
+  {key:'MSFT', pct:0.10}, {key:'NVDA', pct:0.10}, {key:'GOOGL', pct:0.10},
+  {key:'TSM', pct:0.10}, {key:'AAPL', pct:0.10}
+];
+
+let state = {};   
+let amounts = {}; 
+
+function fmt2(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmtUsd(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+
+function getAmt(id, fallback){
+  const v = parseFloat(amounts[id]);
+  return isNaN(v) ? fallback : v;
+}
+
+function renderAllocFor(id){
+  const amt = getAmt(id, 0);
+  const el = document.getElementById('alloc-' + id);
+  if(!el) return;
+  const head = `<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`;
+  const rows = ASSETS.map(a=>{
+    const val = amt * a.pct;
+    return `<div class="alloc-mini-row">
+      <span class="alloc-mini-name">${a.key}</span>
+      <span class="alloc-mini-pct">${Math.round(a.pct*100)}%</span>
+      <span class="alloc-mini-usd">${fmtUsd(val)}</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = head + rows;
+}
+
+function recomputeDebt(){
+  let total = 0, paid = 0;
+  debtIds.forEach(id=>{
+    const amt = getAmt(id, 0);
+    total += amt;
+    if(state[id]) paid += amt;
+  });
+  const remaining = Math.max(0, total - paid);
+  const pct = total ? Math.min(100, (paid/total)*100) : 0;
+  document.getElementById('debtBar').style.width = (100-pct) + '%';
+  document.getElementById('debtLabel').textContent = fmt2(remaining) + ' บาท';
+}
+
+function recomputePortfolio(){
+  let running = 0, checkedCum = 0;
+  portIds.forEach(id=>{
+    const amt = getAmt(id, 0);
+    running += amt;
+    const subEl = document.getElementById('cum-' + id);
+    if(subEl) subEl.textContent = 'สะสม ' + fmtUsd(running) + ' USD';
+    if(state[id]) checkedCum = running;
+    renderAllocFor(id);
+  });
+  const goalInput = document.getElementById('portGoalInput');
+  const goal = parseFloat(goalInput.value) || 0;
+  const pct = goal ? Math.min(100, (checkedCum/goal)*100) : 0;
+  document.getElementById('portBar').style.width = pct + '%';
+  document.getElementById('portCumLabel').textContent = fmtUsd(checkedCum);
+}
+
+function computeAndRender(){
+  recomputeDebt();
+  recomputePortfolio();
+  const totalItems = items.length;
+  const checkedCount = items.filter(el=>state[el.dataset.id]).length;
+  const overall = totalItems ? Math.round((checkedCount/totalItems)*100) : 0;
+  document.getElementById('finaleNum').textContent = overall + '%';
+}
+
+function applyVisual(){
+  items.forEach(el=>{
+    if(state[el.dataset.id]) el.classList.add('checked');
+    else el.classList.remove('checked');
+  });
+  computeAndRender();
+}
+
+function saveToFirebase(){
+  dbRef.set({
+    state: state,
+    amounts: amounts,
+    goal: document.getElementById('portGoalInput').value
+  });
+}
+
+dbRef.on('value', (snapshot) => {
+  const data = snapshot.val();
+  if(data){
+    state = data.state || {};
+    amounts = data.amounts || {};
+    if(data.goal !== undefined){
+      document.getElementById('portGoalInput').value = data.goal;
+    }
+  } else {
+    state = {};
+    amounts = {};
+  }
+
+  document.querySelectorAll('.amt-input').forEach(inp=>{
+    const id = inp.id.replace('amt-', '');
+    if(amounts[id] !== undefined){ 
+      inp.value = amounts[id]; 
+    } else { 
+      amounts[id] = inp.value; 
+    }
+  });
+
+  applyVisual();
+});
+
+items.forEach(el=>{
+  el.addEventListener('click', (ev)=>{
+    if(ev.target.classList.contains('amt-input')) return;
+    const id = el.dataset.id;
+    state[id] = !state[id];
+    applyVisual();
+    saveToFirebase();
+  });
+});
+
+document.querySelectorAll('.amt-input').forEach(inp=>{
+  inp.addEventListener('click', (ev)=> ev.stopPropagation());
+  inp.addEventListener('input', ()=>{
+    const id = inp.id.replace('amt-', '');
+    amounts[id] = inp.value;
+    computeAndRender();
+    saveToFirebase();
+  });
+});
+
+const goalInputEl = document.getElementById('portGoalInput');
+goalInputEl.addEventListener('click', (ev)=> ev.stopPropagation());
+goalInputEl.addEventListener('input', ()=>{
+  computeAndRender();
+  saveToFirebase();
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมด กลับเป็นค่าเริ่มต้น? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  state = {};
+  amounts = {};
+  document.querySelectorAll('.amt-input').forEach(inp=>{
+    inp.value = inp.defaultValue;
+    amounts[inp.id.replace('amt-', '')] = inp.value;
+  });
+  goalInputEl.value = goalInputEl.defaultValue;
+  applyVisual();
+  saveToFirebase();
+});
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
+
+
