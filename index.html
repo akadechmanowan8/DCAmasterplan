@@ -324,216 +324,238 @@
       <div class="port-block" data-id="port-8">
         <div class="item port-item" data-id="port-8"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ธ.ค. 69</div><div class="item-sub" id="cum-port-8">สะสม 1,075 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-8" value="100" step="0.01" inputmode="decimal"></div></div>
         <div class="alloc-mini" id="alloc-port-8"></div>
-      </div>
-      <div class="port-block" data-id="port-9">
-        <div class="item port-item" data-id="port-9"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ธ.ค. 69 — งวดสุดท้าย</div><div class="item-sub" id="cum-port-9">สะสม 1,200 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-9" value="125" step="0.01" inputmode="decimal"></div></div>
-        <div class="alloc-mini" id="alloc-port-9"></div>
-      </div>
-    </div>
+      </div
+        <!-- Firebase Web SDK v11 (ES Modules) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+  import { 
+    getFirestore, 
+    doc, 
+    onSnapshot, 
+    setDoc, 
+    enableIndexedDbPersistence 
+  } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
 
-    <div class="card">
-      <div class="card-title">สูตรคำนวณสัดส่วน <span class="tag">ETF 50% : หุ้น 50%</span></div>
-      <div class="alloc" style="font-size:12px; color:var(--text-dim); line-height:1.9; padding-top:0;">
-        ETF (SCHD 25% + VXUS 25%) และหุ้นรายตัว 5 ตัว (MSFT · NVDA · GOOGL · TSM · AAPL) ตัวละ 10% เท่ากัน — พิมพ์ยอดเงินในแต่ละงวดด้านบน ระบบคำนวณให้อัตโนมัติทันที
-      </div>
-    </div>
-  </section>
+  // 1. Firebase Configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyBMFA9zPlwA_mEJZoLQugSAaVYJKNOKZMo",
+    authDomain: "dcamaster-9cf2c.firebaseapp.com",
+    databaseURL: "https://dcamaster-9cf2c-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "dcamaster-9cf2c",
+    storageBucket: "dcamaster-9cf2c.firebasestorage.app",
+    messagingSenderId: "980320546588",
+    appId: "1:980320546588:web:6c813dad46bc42997254d9"
+  };
 
-  <div class="finale">
-    <div class="finale-num" id="finaleNum">0%</div>
-    <div class="finale-cap">แผนสำเร็จแล้ว ณ ตอนนี้</div>
-    <div class="finale-goal">
-      🎯 เป้าหมายสิ้นปี 2569<br>
-      หนี้สิน: <b>0.00 บาท</b> (หมดเกลี้ยง 100%)<br>
-      เงินต้นสะสม: <b>1,200 USD</b><br>
-      ประมาณการมูลค่าพอร์ตรวมผลตอบแทน: <b>~1,230 – 1,300+ USD</b>
-    </div>
-  </div>
+  // Initialize Firebase & Firestore
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-  <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ + ตัวเลขทั้งหมด (คืนค่าเริ่มต้น)</button></div>
+  // รองรับการทำงานแบบ Offline (ออฟไลน์ก็ติ๊กได้ พอนเน็ตกลับมาจะซิงค์ให้อัตโนมัติ)
+  enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+      console.warn('Persistence failed: Multiple tabs open');
+    } else if (err.code === 'unimplemented') {
+      console.warn('Persistence not supported by browser');
+    }
+  });
 
-</div>
+  // อ้างอิง Document ID สำคัญในระบบ
+  const DOC_REF = doc(db, "financial_plans", "plan_2569");
 
-<script>
-const STORAGE_KEY = 'financial-plan-2569-checklist';
-const AMT_KEY = 'financial-plan-2569-amounts';
-const GOAL_KEY = 'financial-plan-2569-goal';
-const items = Array.from(document.querySelectorAll('.item[data-id]'));
-const debtIds = ['debt-1','debt-2','debt-3','debt-4','debt-5'];
-const portIds = ['port-1','port-2','port-3','port-4','port-5','port-6','port-7','port-8','port-9'];
-const portDates = {
-  'port-1':'17 ส.ค. 69 — ก้อนประเดิม','port-2':'1 ก.ย. 69','port-3':'16 ก.ย. 69',
-  'port-4':'1 ต.ค. 69','port-5':'16 ต.ค. 69','port-6':'1 พ.ย. 69',
-  'port-7':'16 พ.ย. 69','port-8':'1 ธ.ค. 69','port-9':'16 ธ.ค. 69 — งวดสุดท้าย'
-};
-const ASSETS = [
-  {key:'SCHD', pct:0.25}, {key:'VXUS', pct:0.25},
-  {key:'MSFT', pct:0.10}, {key:'NVDA', pct:0.10}, {key:'GOOGL', pct:0.10},
-  {key:'TSM', pct:0.10}, {key:'AAPL', pct:0.10}
-];
+  // DOM Elements & Constants
+  const items = Array.from(document.querySelectorAll('.item[data-id]'));
+  const debtIds = ['debt-1','debt-2','debt-3','debt-4','debt-5'];
+  const portIds = ['port-1','port-2','port-3','port-4','port-5','port-6','port-7','port-8','port-9'];
+  const ASSETS = [
+    {key:'SCHD', pct:0.25}, {key:'VXUS', pct:0.25},
+    {key:'MSFT', pct:0.10}, {key:'NVDA', pct:0.10}, {key:'GOOGL', pct:0.10},
+    {key:'TSM', pct:0.10}, {key:'AAPL', pct:0.10}
+  ];
 
-let state = {};   // checked state per item id
-let amounts = {}; // current amount per item id
+  let state = {};   // สถานะการติ๊กเลือก
+  let amounts = {}; // จำนวนเงินในแต่ละรายการ
+  let isInitialLoad = true;
+  let saveTimeout = null;
 
-function fmt2(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
-function fmt0(n){ return Math.round(n).toLocaleString(); }
-function fmtUsd(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+  // Helper Functions
+  function fmt2(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function fmtUsd(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-function getAmt(id, fallback){
-  const v = parseFloat(amounts[id]);
-  return isNaN(v) ? fallback : v;
-}
+  function getAmt(id, fallback){
+    const v = parseFloat(amounts[id]);
+    return isNaN(v) ? fallback : v;
+  }
 
-function renderAllocFor(id){
-  const amt = getAmt(id, 0);
-  const el = document.getElementById('alloc-' + id);
-  if(!el) return;
-  const head = `<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`;
-  const rows = ASSETS.map(a=>{
-    const val = amt * a.pct;
-    return `<div class="alloc-mini-row">
-      <span class="alloc-mini-name">${a.key}</span>
-      <span class="alloc-mini-pct">${Math.round(a.pct*100)}%</span>
-      <span class="alloc-mini-usd">${fmtUsd(val)}</span>
-    </div>`;
-  }).join('');
-  el.innerHTML = head + rows;
-}
-
-function recomputeDebt(){
-  let total = 0, paid = 0;
-  debtIds.forEach(id=>{
+  function renderAllocFor(id){
     const amt = getAmt(id, 0);
-    total += amt;
-    if(state[id]) paid += amt;
-  });
-  const remaining = Math.max(0, total - paid);
-  const pct = total ? Math.min(100, (paid/total)*100) : 0;
-  document.getElementById('debtBar').style.width = (100-pct) + '%';
-  document.getElementById('debtLabel').textContent = fmt2(remaining) + ' บาท';
-}
+    const el = document.getElementById('alloc-' + id);
+    if(!el) return;
+    const head = `<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`;
+    const rows = ASSETS.map(a=>{
+      const val = amt * a.pct;
+      return `<div class="alloc-mini-row">
+        <span class="alloc-mini-name">${a.key}</span>
+        <span class="alloc-mini-pct">${Math.round(a.pct*100)}%</span>
+        <span class="alloc-mini-usd">${fmtUsd(val)}</span>
+      </div>`;
+    }).join('');
+    el.innerHTML = head + rows;
+  }
 
-function recomputePortfolio(){
-  let running = 0, checkedCum = 0;
-  portIds.forEach(id=>{
-    const amt = getAmt(id, 0);
-    running += amt;
-    const subEl = document.getElementById('cum-' + id);
-    if(subEl) subEl.textContent = 'สะสม ' + fmtUsd(running) + ' USD';
-    if(state[id]) checkedCum = running;
-    renderAllocFor(id);
-  });
-  const goalInput = document.getElementById('portGoalInput');
-  const goal = parseFloat(goalInput.value) || 0;
-  const pct = goal ? Math.min(100, (checkedCum/goal)*100) : 0;
-  document.getElementById('portBar').style.width = pct + '%';
-  document.getElementById('portCumLabel').textContent = fmtUsd(checkedCum);
-}
+  function recomputeDebt(){
+    let total = 0, paid = 0;
+    debtIds.forEach(id=>{
+      const amt = getAmt(id, 0);
+      total += amt;
+      if(state[id]) paid += amt;
+    });
+    const remaining = Math.max(0, total - paid);
+    const pct = total ? Math.min(100, (paid/total)*100) : 0;
+    document.getElementById('debtBar').style.width = (100-pct) + '%';
+    document.getElementById('debtLabel').textContent = fmt2(remaining) + ' บาท';
+  }
 
-function computeAndRender(){
-  recomputeDebt();
-  recomputePortfolio();
-  const totalItems = items.length;
-  const checkedCount = items.filter(el=>state[el.dataset.id]).length;
-  const overall = totalItems ? Math.round((checkedCount/totalItems)*100) : 0;
-  document.getElementById('finaleNum').textContent = overall + '%';
-}
+  function recomputePortfolio(){
+    let running = 0, checkedCum = 0;
+    portIds.forEach(id=>{
+      const amt = getAmt(id, 0);
+      running += amt;
+      const subEl = document.getElementById('cum-' + id);
+      if(subEl) subEl.textContent = 'สะสม ' + fmtUsd(running) + ' USD';
+      if(state[id]) checkedCum = running;
+      renderAllocFor(id);
+    });
+    const goalInput = document.getElementById('portGoalInput');
+    const goal = parseFloat(goalInput.value) || 0;
+    const pct = goal ? Math.min(100, (checkedCum/goal)*100) : 0;
+    document.getElementById('portBar').style.width = pct + '%';
+    document.getElementById('portCumLabel').textContent = fmtUsd(checkedCum);
+  }
 
-function applyVisual(){
-  items.forEach(el=>{
-    if(state[el.dataset.id]) el.classList.add('checked');
-    else el.classList.remove('checked');
-  });
-  computeAndRender();
-}
+  function computeAndRender(){
+    recomputeDebt();
+    recomputePortfolio();
+    const totalItems = items.length;
+    const checkedCount = items.filter(el=>state[el.dataset.id]).length;
+    const overall = totalItems ? Math.round((checkedCount/totalItems)*100) : 0;
+    document.getElementById('finaleNum').textContent = overall + '%';
+  }
 
-function loadState(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){ state = JSON.parse(raw); }
-  }catch(e){ state = {}; }
-  try{
-    const rawAmt = localStorage.getItem(AMT_KEY);
-    if(rawAmt){ amounts = JSON.parse(rawAmt); }
-  }catch(e){ amounts = {}; }
-  // sync input fields with saved amounts (if any)
-  document.querySelectorAll('.amt-input').forEach(inp=>{
-    const id = inp.id.replace('amt-', '');
-    if(amounts[id] !== undefined){ inp.value = amounts[id]; }
-    else { amounts[id] = inp.value; }
-  });
-  try{
-    const rawGoal = localStorage.getItem(GOAL_KEY);
-    if(rawGoal !== null){ document.getElementById('portGoalInput').value = rawGoal; }
-  }catch(e){}
-  applyVisual();
-}
-
-function saveState(){
-  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ console.error('save failed', e); }
-}
-function saveAmounts(){
-  try{ localStorage.setItem(AMT_KEY, JSON.stringify(amounts)); }catch(e){ console.error('save failed', e); }
-}
-function saveGoal(){
-  try{ localStorage.setItem(GOAL_KEY, document.getElementById('portGoalInput').value); }catch(e){}
-}
-
-items.forEach(el=>{
-  el.addEventListener('click', (ev)=>{
-    if(ev.target.classList.contains('amt-input')) return;
-    const id = el.dataset.id;
-    state[id] = !state[id];
-    applyVisual();
-    saveState();
-  });
-});
-
-document.querySelectorAll('.amt-input').forEach(inp=>{
-  inp.addEventListener('click', (ev)=> ev.stopPropagation());
-  inp.addEventListener('input', ()=>{
-    const id = inp.id.replace('amt-', '');
-    amounts[id] = inp.value;
+  function applyVisual(){
+    items.forEach(el=>{
+      if(state[el.dataset.id]) el.classList.add('checked');
+      else el.classList.remove('checked');
+    });
     computeAndRender();
-    saveAmounts();
+  }
+
+  // บันทึกข้อมูลไปยัง Cloud Firestore
+  async function saveDataToCloud(){
+    const goalVal = document.getElementById('portGoalInput').value;
+    try {
+      await setDoc(DOC_REF, {
+        state: state,
+        amounts: amounts,
+        goal: goalVal,
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch(e) {
+      console.error("Firebase Save Error:", e);
+    }
+  }
+
+  // หน่วงเวลาการเซฟสำหรับการพิมพ์ตัวเลข (Debounce) เพื่อลดจำนวนการเขียน API
+  function triggerAutoSave(){
+    if(saveTimeout) clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => {
+      saveDataToCloud();
+    }, 400);
+  }
+
+  // ดึงข้อมูล Realtime Listening จาก Firestore
+  onSnapshot(DOC_REF, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      state = data.state || {};
+      amounts = data.amounts || {};
+
+      // อัปเดตค่าเข้าช่อง Input ต่างๆ
+      document.querySelectorAll('.amt-input').forEach(inp => {
+        const id = inp.id.replace('amt-', '');
+        if (amounts[id] !== undefined) {
+          inp.value = amounts[id];
+        } else {
+          amounts[id] = inp.value;
+        }
+      });
+
+      if (data.goal !== undefined) {
+        document.getElementById('portGoalInput').value = data.goal;
+      }
+
+      applyVisual();
+    } else {
+      // กรณีเพิ่งเริ่มครั้งแรก และยังไม่มี Document บน Cloud ให้สร้างข้อมูลเริ่มต้น
+      document.querySelectorAll('.amt-input').forEach(inp => {
+        const id = inp.id.replace('amt-', '');
+        amounts[id] = inp.value;
+      });
+      saveDataToCloud();
+      applyVisual();
+    }
   });
-});
 
-const goalInputEl = document.getElementById('portGoalInput');
-goalInputEl.addEventListener('click', (ev)=> ev.stopPropagation());
-goalInputEl.addEventListener('input', ()=>{
-  computeAndRender();
-  saveGoal();
-});
+  // Event Listeners
+  items.forEach(el=>{
+    el.addEventListener('click', (ev)=>{
+      if(ev.target.classList.contains('amt-input')) return;
+      const id = el.dataset.id;
+      state[id] = !state[id];
+      applyVisual();
+      saveDataToCloud();
+    });
+  });
 
-document.getElementById('resetBtn').addEventListener('click', ()=>{
-  if(!confirm('ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมด กลับเป็นค่าเริ่มต้น? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
-  state = {};
-  amounts = {};
   document.querySelectorAll('.amt-input').forEach(inp=>{
-    inp.value = inp.defaultValue;
-    amounts[inp.id.replace('amt-', '')] = inp.value;
+    inp.addEventListener('click', (ev)=> ev.stopPropagation());
+    inp.addEventListener('input', ()=>{
+      const id = inp.id.replace('amt-', '');
+      amounts[id] = inp.value;
+      computeAndRender();
+      triggerAutoSave();
+    });
   });
-  goalInputEl.value = goalInputEl.defaultValue;
-  applyVisual();
-  saveState();
-  saveAmounts();
-  saveGoal();
-});
 
-loadState();
-
-// PWA: register service worker for offline/installable support
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  const goalInputEl = document.getElementById('portGoalInput');
+  goalInputEl.addEventListener('click', (ev)=> ev.stopPropagation());
+  goalInputEl.addEventListener('input', ()=>{
+    computeAndRender();
+    triggerAutoSave();
   });
-}
 
-// Ask the browser not to auto-evict this site's storage when device space is low
-if (navigator.storage && navigator.storage.persist) {
-  navigator.storage.persist().catch(()=>{});
-}
-</script>
-</body>
-</html>
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    if(!confirm('ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมด กลับเป็นค่าเริ่มต้น? ข้อมูลบนคลาวด์จะถูกล้างด้วย')) return;
+    state = {};
+    amounts = {};
+    document.querySelectorAll('.amt-input').forEach(inp=>{
+      inp.value = inp.defaultValue;
+      amounts[inp.id.replace('amt-', '')] = inp.value;
+    });
+    goalInputEl.value = goalInputEl.defaultValue;
+    applyVisual();
+    saveDataToCloud();
+  });
+
+  // PWA Service Worker Registration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js').catch(()=>{});
+    });
+  }
+
+  if (navigator.storage && navigator.storage.persist) {
+    navigator.storage.persist().catch(()=>{});
+  }
+    </script>
+    
