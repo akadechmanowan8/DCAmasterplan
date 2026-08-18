@@ -168,7 +168,7 @@ const ASSETS=[
  {key:"NVDA",pct:.10},{key:"GOOGL",pct:.10},{key:"TSM",pct:.10},{key:"AAPL",pct:.10}
 ];
 const LOCAL_KEY="financial_plan_2569_backup_v2";
-let state={},amounts={},saveTimer=null,ignoreRemote=false;
+let state={},amounts={},saveTimer=null,ignoreRemote=false,localUpdatedAt=0;
 
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -189,6 +189,7 @@ function loadLocal(){
    const d=JSON.parse(localStorage.getItem(LOCAL_KEY));
    if(!d)return false;
    state=d.state||{};amounts=d.amounts||{};
+    localUpdatedAt=d.updatedAt?Date.parse(d.updatedAt):0;
    if(d.goal!==undefined)$("portGoalInput").value=d.goal;
    document.querySelectorAll(".amt-input").forEach(i=>{
      const id=i.id.replace("amt-","");
@@ -244,7 +245,7 @@ async function push(){
  }
 }
 function debouncePush(){
- saveLocal();clearTimeout(saveTimer);saveTimer=setTimeout(push,500);
+ saveLocal();clearTimeout(saveTimer);saveTimer=setTimeout(()=>{saveTimer=null;push();},500);
 }
 
 document.querySelectorAll(".item[data-id]").forEach(el=>{
@@ -283,21 +284,36 @@ try{
 }
 
 onSnapshot(DOC_REF,async snap=>{
- if(ignoreRemote)return;
- if(snap.exists()){
-   const d=snap.data();
-   state=d.state||{};amounts=d.amounts||{};
-   if(d.goal!==undefined)$("portGoalInput").value=d.goal;
-   document.querySelectorAll(".amt-input").forEach(i=>{
-     const id=i.id.replace("amt-","");
-     if(amounts[id]!==undefined)i.value=amounts[id];
-   });
-   saveLocal();recompute();
-   setSync(navigator.onLine?"online":"offline",navigator.onLine?"ออนไลน์ · ซิงก์ข้อมูลแบบเรียลไทม์":"ออฟไลน์ · ข้อมูลจะซิงก์เมื่อกลับมาออนไลน์");
- }else{
-   amounts=Object.keys(amounts).length?amounts:defaultAmounts();
-   recompute();await push();
- }
+  if(ignoreRemote)return;
+  if(snap.exists()){
+    const d=snap.data();
+    const remoteUpdatedAt=d.updatedAt?Date.parse(d.updatedAt):0;
+
+    // ป้องกัน Firebase snapshot เก่าทับค่าที่เพิ่งแก้ในเครื่อง
+    if(remoteUpdatedAt < localUpdatedAt){
+      setSync("online","กำลังบันทึกการแก้ไขล่าสุด...");
+      if(!saveTimer) await push();
+      return;
+    }
+
+    state=d.state||{};amounts=d.amounts||{};
+    if(d.goal!==undefined)$("portGoalInput").value=d.goal;
+    document.querySelectorAll(".amt-input").forEach(i=>{
+      const id=i.id.replace("amt-","");
+      if(amounts[id]!==undefined)i.value=amounts[id];
+    });
+
+    localUpdatedAt=remoteUpdatedAt;
+    localStorage.setItem(LOCAL_KEY,JSON.stringify({
+      state,amounts,goal:$("portGoalInput").value,
+      updatedAt:new Date(localUpdatedAt||Date.now()).toISOString()
+    }));
+    recompute();
+    setSync(navigator.onLine?"online":"offline",navigator.onLine?"ออนไลน์ · ซิงก์ข้อมูลแบบเรียลไทม์":"ออฟไลน์ · ข้อมูลจะซิงก์เมื่อกลับมาออนไลน์");
+  }else{
+    amounts=Object.keys(amounts).length?amounts:defaultAmounts();
+    recompute();await push();
+  }
 },err=>{
  console.error("Firestore listener:",err);
  setSync("offline","เชื่อมต่อ Firebase ไม่สำเร็จ · ใช้ข้อมูลออฟไลน์");
