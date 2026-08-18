@@ -15,38 +15,67 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root{--bg:#0A1420;--surface:#101E2E;--surface-2:#152840;--border:#1E3348;--text:#EAF2F5;--text-dim:#7C93A6;--debt:#E15B4B;--growth:#2ECC8F;--gold:#E8B94D}
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;min-height:100vh;padding:24px 16px 60px}
-  .wrap{max-width:640px;margin:0 auto}
-  header{margin-bottom:28px}.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px}
-  h1{font-family:'Kanit',sans-serif;font-weight:600;font-size:26px;line-height:1.3;margin-bottom:4px}.sub{color:var(--text-dim);font-size:14px}
-  .handoff{margin-top:22px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 18px 16px}
-  .handoff-row{margin-bottom:14px}.handoff-row:last-child{margin-bottom:0}.handoff-label{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-family:'Kanit',sans-serif}
-  .handoff-label b{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
-  .goal-input{width:70px;text-align:right;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:3px 6px;-moz-appearance:textfield}
-  .goal-input::-webkit-outer-spin-button,.goal-input::-webkit-inner-spin-button,.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
-  .goal-input:focus,.amt-input:focus{outline:1.5px solid var(--gold);border-color:var(--gold)}
-  .track{height:8px;border-radius:6px;background:var(--surface-2);overflow:hidden;position:relative}.fill{height:100%;border-radius:6px;transition:width .5s ease}
-  .fill.debt{background:linear-gradient(90deg,var(--debt),#c94636);box-shadow:0 0 10px rgba(225,91,75,.4)}.fill.growth{background:linear-gradient(90deg,#1e9d6e,var(--growth));box-shadow:0 0 10px rgba(46,204,143,.35)}
-  .baton{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.08em;margin:10px 0 4px;opacity:.85}
-  .phase{margin-top:26px}.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}.phase-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bg);background:var(--gold);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
-  .phase-title{font-family:'Kanit',sans-serif;font-weight:600;font-size:16px}.phase-dates{font-size:12px;color:var(--text-dim);margin-left:auto;font-family:'JetBrains Mono',monospace}
-  .card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 4px;margin-bottom:12px;overflow:hidden}
-  .card-title{font-size:13px;color:var(--text-dim);padding:10px 14px 4px;display:flex;justify-content:space-between;align-items:center}.card-title span.tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);border:1px solid rgba(232,185,77,.35);padding:2px 6px;border-radius:20px}
-  .item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}.item:first-of-type{border-top:none}
-  .box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--text-dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s ease}.box svg{opacity:0;transform:scale(.5);transition:all .15s ease}
-  .item.checked .box{background:var(--growth);border-color:var(--growth)}.item.checked .box svg{opacity:1;transform:scale(1)}.item.checked .item-label{color:var(--text-dim);text-decoration:line-through;text-decoration-color:var(--border)}.item.debt-item.checked .box{background:var(--debt);border-color:var(--debt)}
-  .item-label{font-size:14px;flex:1;line-height:1.4}.item-sub{font-size:11px;color:var(--text-dim);margin-top:2px}.item-amt{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;white-space:nowrap}.item-amt.out{color:var(--debt)}.item-amt.in{color:var(--growth)}.item-amt.neutral{color:var(--text-dim)}
-  .amt-wrap{display:flex;align-items:center;gap:2px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}.amt-wrap.out{color:var(--debt)}.amt-wrap.in{color:var(--growth)}
-  .amt-input{width:78px;text-align:right;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:inherit;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:5px 6px;-moz-appearance:textfield}
-  .port-block{border-top:1px solid var(--border)}.port-block:first-child{border-top:none}.port-block .item{border-top:none}.alloc-mini{padding:2px 14px 12px 46px}
-  .alloc-mini-head{display:grid;grid-template-columns:1fr 48px 90px;gap:6px;font-size:9px;color:var(--text-dim);opacity:.7;padding-bottom:4px;border-bottom:1px solid var(--border);margin-bottom:2px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}.alloc-mini-head span:not(:first-child){text-align:right}
-  .alloc-mini-row{display:grid;grid-template-columns:1fr 48px 90px;gap:6px;align-items:center;padding:4px 0;font-size:12px;border-top:1px dashed rgba(30,51,72,.6)}.alloc-mini-row:first-of-type{border-top:none}.alloc-mini-name{font-family:'Kanit',sans-serif;font-weight:500}.alloc-mini-pct{color:var(--text-dim);font-size:11px;text-align:right}.alloc-mini-usd{font-family:'JetBrains Mono',monospace;color:var(--gold);text-align:right;font-weight:500}
-  .status-line{padding:12px 14px;border-top:1px dashed var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}.status-line b{font-family:'JetBrains Mono',monospace;font-size:14px}
-  .alloc{margin-top:2px;padding:4px 14px 12px}.finale{margin-top:28px;background:linear-gradient(160deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center}.finale-num{font-family:'Kanit',sans-serif;font-weight:700;font-size:34px;color:var(--growth);line-height:1.1}.finale-cap{font-size:12px;color:var(--text-dim);margin-top:4px}.finale-goal{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);font-size:12px;color:var(--text-dim);text-align:left;line-height:1.9}.finale-goal b{color:var(--gold);font-family:'JetBrains Mono',monospace}
-  .reset-row{text-align:center;margin-top:22px}.reset-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Sarabun',sans-serif;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer}.reset-btn:active{background:var(--surface)}
-  @media(max-width:430px){body{padding:18px 12px 48px}.phase-dates{font-size:10px}.item{gap:9px;padding-left:10px;padding-right:10px}.alloc-mini{padding-left:39px;padding-right:10px}.amt-input{width:72px}}
+:root{--bg:#0A1420;--surface:#101E2E;--surface-2:#152840;--border:#1E3348;--text:#EAF2F5;--text-dim:#7C93A6;--debt:#E15B4B;--growth:#2ECC8F;--gold:#E8B94D}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'Sarabun',sans-serif;min-height:100vh;padding:24px 16px 60px}
+.wrap{max-width:640px;margin:0 auto}
+header{margin-bottom:28px}
+.eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px}
+h1{font-family:'Kanit',sans-serif;font-weight:600;font-size:26px;line-height:1.3;margin-bottom:4px}
+.sub{color:var(--text-dim);font-size:14px}
+.handoff{margin-top:22px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px}
+.handoff-row{margin-bottom:14px}.handoff-row:last-child{margin-bottom:0}
+.handoff-label{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;color:var(--text-dim);margin-bottom:6px;font-family:'Kanit',sans-serif}
+.handoff-label b{color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.goal-input{width:70px;text-align:right;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:3px 6px;-moz-appearance:textfield}
+.goal-input::-webkit-outer-spin-button,.goal-input::-webkit-inner-spin-button,.amt-input::-webkit-outer-spin-button,.amt-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.goal-input:focus,.amt-input:focus{outline:1.5px solid var(--gold);border-color:var(--gold)}
+.track{height:8px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.fill{height:100%;border-radius:6px;transition:width .5s ease}
+.fill.debt{background:linear-gradient(90deg,var(--debt),#c94636);box-shadow:0 0 10px rgba(225,91,75,.4)}
+.fill.growth{background:linear-gradient(90deg,#1e9d6e,var(--growth));box-shadow:0 0 10px rgba(46,204,143,.35)}
+.baton{text-align:center;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:.08em;margin:10px 0 4px;opacity:.85}
+.phase{margin-top:26px}
+.phase-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.phase-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--bg);background:var(--gold);width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0}
+.phase-title{font-family:'Kanit',sans-serif;font-weight:600;font-size:16px}
+.phase-dates{font-size:12px;color:var(--text-dim);margin-left:auto;font-family:'JetBrains Mono',monospace}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 4px;margin-bottom:12px;overflow:hidden}
+.card-title{font-size:13px;color:var(--text-dim);padding:10px 14px 4px;display:flex;justify-content:space-between;align-items:center}
+.tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--gold);border:1px solid rgba(232,185,77,.35);padding:2px 6px;border-radius:20px}
+.item{display:flex;align-items:center;gap:12px;padding:10px 14px;border-top:1px solid var(--border);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.item:first-child{border-top:none}
+.box{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--text-dim);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s ease}
+.box svg{opacity:0;transform:scale(.5);transition:all .15s ease}
+.item.checked .box{background:var(--growth);border-color:var(--growth)}
+.item.checked .box svg{opacity:1;transform:scale(1)}
+.item.debt-item.checked .box{background:var(--debt);border-color:var(--debt)}
+.item.checked .item-label{color:var(--text-dim);text-decoration:line-through;text-decoration-color:var(--border)}
+.item-label{font-size:14px;flex:1;line-height:1.4}.item-sub{font-size:11px;color:var(--text-dim);margin-top:2px}
+.amt-wrap{display:flex;align-items:center;gap:2px;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500}
+.amt-wrap.out{color:var(--debt)}.amt-wrap.in{color:var(--growth)}
+.amt-input{width:78px;text-align:right;background:var(--surface-2);border:1px solid var(--border);border-radius:6px;color:inherit;font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:500;padding:5px 6px;-moz-appearance:textfield}
+.port-block{border-top:1px solid var(--border)}.port-block:first-child{border-top:none}
+.port-block .item{border-top:none}
+.alloc-mini{padding:2px 14px 12px 46px}
+.alloc-mini-head{display:grid;grid-template-columns:1fr 48px 90px;gap:6px;font-size:9px;color:var(--text-dim);opacity:.7;padding-bottom:4px;border-bottom:1px solid var(--border);font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.alloc-mini-head span:not(:first-child){text-align:right}
+.alloc-mini-row{display:grid;grid-template-columns:1fr 48px 90px;gap:6px;align-items:center;padding:4px 0;font-size:12px;border-top:1px dashed rgba(30,51,72,.6)}
+.alloc-mini-name{font-family:'Kanit',sans-serif;font-weight:500}.alloc-mini-pct{color:var(--text-dim);font-size:11px;text-align:right}.alloc-mini-usd{font-family:'JetBrains Mono',monospace;color:var(--gold);text-align:right;font-weight:500}
+.status-line{padding:12px 14px;border-top:1px dashed var(--border);font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.status-line b{font-family:'JetBrains Mono',monospace;font-size:14px}
+.alloc{padding:4px 14px 12px}
+.finale{margin-top:28px;background:linear-gradient(160deg,var(--surface-2),var(--surface));border:1px solid var(--border);border-radius:16px;padding:20px;text-align:center}
+.finale-num{font-family:'Kanit',sans-serif;font-weight:700;font-size:34px;color:var(--growth);line-height:1.1}
+.finale-cap{font-size:12px;color:var(--text-dim);margin-top:4px}
+.finale-goal{margin-top:14px;padding-top:14px;border-top:1px dashed var(--border);font-size:12px;color:var(--text-dim);text-align:left;line-height:1.9}
+.finale-goal b{color:var(--gold);font-family:'JetBrains Mono',monospace}
+.reset-row{text-align:center;margin-top:22px}
+.reset-btn{background:none;border:1px solid var(--border);color:var(--text-dim);font-family:'Sarabun',sans-serif;font-size:12px;padding:8px 16px;border-radius:20px;cursor:pointer}
+.sync-status{text-align:center;margin-top:12px;font-size:11px;color:var(--text-dim)}
+.sync-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold);margin-right:5px}
+.sync-dot.online{background:var(--growth)}.sync-dot.offline{background:var(--debt)}
+@media(max-width:430px){body{padding:18px 12px 48px}.phase-dates{font-size:10px}.item{gap:9px;padding-left:10px;padding-right:10px}.alloc-mini{padding-left:39px;padding-right:10px}.amt-input{width:72px}}
 </style>
 </head>
 <body>
@@ -55,10 +84,17 @@
 <div class="eyebrow">Financial Plan · 2569</div>
 <h1>แผนการเงินและการลงทุน<br>ส.ค. – ธ.ค. 2569</h1>
 <div class="sub">แตะรายการเพื่อติ๊กเมื่อทำสำเร็จ — บันทึกอัตโนมัติ</div>
+
 <div class="handoff">
-<div class="handoff-row"><div class="handoff-label"><span>หนี้สินคงเหลือ</span><b id="debtLabel">2,942.22 บาท</b></div><div class="track"><div class="fill debt" id="debtBar" style="width:0%"></div></div></div>
+<div class="handoff-row">
+<div class="handoff-label"><span>หนี้สินคงเหลือ</span><b id="debtLabel">2,942.22 บาท</b></div>
+<div class="track"><div class="fill debt" id="debtBar" style="width:100%"></div></div>
+</div>
 <div class="baton">⟶ 5 ม.ค. 70 หนี้เป็น 0 · เงินต้นสะสมเต็มพอร์ต ⟶</div>
-<div class="handoff-row"><div class="handoff-label"><span>เงินต้นสะสมพอร์ต</span><span><b id="portCumLabel">0</b> / <input type="number" id="portGoalInput" class="goal-input" value="1200" step="0.01" inputmode="decimal"> USD</span></div><div class="track"><div class="fill growth" id="portBar" style="width:0%"></div></div></div>
+<div class="handoff-row">
+<div class="handoff-label"><span>เงินต้นสะสมพอร์ต</span><span><b id="portCumLabel">0.00</b> / <input type="number" id="portGoalInput" class="goal-input" value="1200" step="0.01" inputmode="decimal"> USD</span></div>
+<div class="track"><div class="fill growth" id="portBar" style="width:0%"></div></div>
+</div>
 </div>
 </header>
 
@@ -66,7 +102,11 @@
 <div class="phase-head"><div class="phase-num">1</div><div class="phase-title">ผ่อนชำระหนี้ตามรอบระบบ</div><div class="phase-dates">ก.ย. 69 – ม.ค. 70</div></div>
 <div class="card">
 <div class="card-title">แผนผ่อนชำระ 5 งวด <span class="tag">แก้ไขได้</span></div>
-<div id="debtItems"></div>
+<div class="item debt-item" data-id="debt-1"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 1</div><div class="item-sub">จ่ายไม่เกิน 5 ก.ย. 69</div></div><div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-1" value="950.00" step="0.01" inputmode="decimal"></div></div>
+<div class="item debt-item" data-id="debt-2"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 2</div><div class="item-sub">จ่ายไม่เกิน 5 ต.ค. 69</div></div><div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-2" value="499.38" step="0.01" inputmode="decimal"></div></div>
+<div class="item debt-item" data-id="debt-3"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 3</div><div class="item-sub">จ่ายไม่เกิน 5 พ.ย. 69</div></div><div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-3" value="499.38" step="0.01" inputmode="decimal"></div></div>
+<div class="item debt-item" data-id="debt-4"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 4</div><div class="item-sub">จ่ายไม่เกิน 5 ธ.ค. 69</div></div><div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-4" value="499.38" step="0.01" inputmode="decimal"></div></div>
+<div class="item debt-item" data-id="debt-5"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">งวดที่ 5 (งวดสุดท้าย)</div><div class="item-sub">จ่ายไม่เกิน 5 ม.ค. 70</div></div><div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-5" value="494.08" step="0.01" inputmode="decimal"></div></div>
 <div class="status-line"><span>🎯 เมื่อครบทุกงวด</span><b style="color:var(--growth)">หนี้ = 0.00 บาท</b></div>
 </div>
 </section>
@@ -75,159 +115,201 @@
 <div class="phase-head"><div class="phase-num">2</div><div class="phase-title">ตารางเติมเงินสะสมพอร์ต</div><div class="phase-dates">17 ส.ค. – 16 ธ.ค.</div></div>
 <div class="card">
 <div class="card-title">งวดเติมเงิน <span class="tag">แก้ไขได้ · คำนวณสัดส่วนอัตโนมัติ</span></div>
-<div id="portItems"></div>
+<div id="portContainer">
+<div class="port-block"><div class="item port-item" data-id="port-1"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">17 ส.ค. 69 — ก้อนประเดิม</div><div class="item-sub" id="cum-port-1">สะสม 300.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-1" value="300" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-1"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-2"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ก.ย. 69</div><div class="item-sub" id="cum-port-2">สะสม 400.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-2" value="100" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-2"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-3"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ก.ย. 69</div><div class="item-sub" id="cum-port-3">สะสม 525.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-3" value="125" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-3"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-4"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ต.ค. 69</div><div class="item-sub" id="cum-port-4">สะสม 625.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-4" value="100" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-4"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-5"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ต.ค. 69</div><div class="item-sub" id="cum-port-5">สะสม 750.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-5" value="125" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-5"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-6"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 พ.ย. 69</div><div class="item-sub" id="cum-port-6">สะสม 850.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-6" value="100" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-6"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-7"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 พ.ย. 69</div><div class="item-sub" id="cum-port-7">สะสม 975.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-7" value="125" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-7"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-8"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">1 ธ.ค. 69</div><div class="item-sub" id="cum-port-8">สะสม 1,075.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-8" value="100" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-8"></div></div>
+<div class="port-block"><div class="item port-item" data-id="port-9"><div class="box"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg></div><div><div class="item-label">16 ธ.ค. 69 — งวดสุดท้าย</div><div class="item-sub" id="cum-port-9">สะสม 1,200.00 USD</div></div><div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-9" value="125" step="0.01" inputmode="decimal"></div></div><div class="alloc-mini" id="alloc-port-9"></div></div>
 </div>
+</div>
+
 <div class="card">
 <div class="card-title">สูตรคำนวณสัดส่วน <span class="tag">ETF 50% : หุ้น 50%</span></div>
-<div class="alloc" style="font-size:12px;color:var(--text-dim);line-height:1.9;padding-top:0">ETF (SCHD 25% + VXUS 25%) และหุ้นรายตัว 5 ตัว (MSFT · NVDA · GOOGL · TSM · AAPL) ตัวละ 10% เท่ากัน — พิมพ์ยอดเงินในแต่ละงวดด้านบน ระบบคำนวณให้อัตโนมัติทันที</div>
+<div class="alloc" style="font-size:12px;color:var(--text-dim);line-height:1.9">ETF (SCHD 25% + VXUS 25%) และหุ้นรายตัว 5 ตัว (MSFT · NVDA · GOOGL · TSM · AAPL) ตัวละ 10% เท่ากัน — พิมพ์ยอดเงินในแต่ละงวดด้านบน ระบบคำนวณให้อัตโนมัติทันที</div>
 </div>
 </section>
 
 <div class="finale">
-<div class="finale-num" id="finaleNum">0%</div><div class="finale-cap">แผนสำเร็จแล้ว ณ ตอนนี้</div>
+<div class="finale-num" id="finaleNum">0%</div>
+<div class="finale-cap">แผนสำเร็จแล้ว ณ ตอนนี้</div>
 <div class="finale-goal">🎯 เป้าหมายสิ้นปี 2569<br>หนี้สิน: <b>0.00 บาท</b> (หมดเกลี้ยง 100%)<br>เงินต้นสะสม: <b>1,200 USD</b><br>ประมาณการมูลค่าพอร์ตรวมผลตอบแทน: <b>~1,230 – 1,300+ USD</b></div>
 </div>
 <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ + ตัวเลขทั้งหมด (คืนค่าเริ่มต้น)</button></div>
+<div class="sync-status"><span class="sync-dot" id="syncDot"></span><span id="syncText">กำลังเชื่อมต่อ Firebase...</span></div>
 </div>
 
 <script type="module">
-const FIREBASE_CONFIG = {
-  apiKey:"AIzaSyBMFA9zPlwA_mEJZoLQugSAaVYJKNOKZMo",
-  authDomain:"dcamaster-9cf2c.firebaseapp.com",
-  databaseURL:"https://dcamaster-9cf2c-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"dcamaster-9cf2c",
-  storageBucket:"dcamaster-9cf2c.firebasestorage.app",
-  messagingSenderId:"",
-  appId:""
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc, enableIndexedDbPersistence } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+const firebaseConfig={
+ apiKey:"AIzaSyBMFA9zPlwA_mEJZoLQugSAaVYJKNOKZMo",
+ authDomain:"dcamaster-9cf2c.firebaseapp.com",
+ databaseURL:"https://dcamaster-9cf2c-default-rtdb.asia-southeast1.firebasedatabase.app",
+ projectId:"dcamaster-9cf2c",
+ storageBucket:"dcamaster-9cf2c.firebasestorage.app",
+ messagingSenderId:"980320546588",
+ appId:"1:980320546588:web:6c813dad46bc42997254d9"
 };
 
-const debtDefaults=[950,499.38,499.38,499.38,494.08];
-const debtDates=["จ่ายไม่เกิน 5 ก.ย. 69","จ่ายไม่เกิน 5 ต.ค. 69","จ่ายไม่เกิน 5 พ.ย. 69","จ่ายไม่เกิน 5 ธ.ค. 69","จ่ายไม่เกิน 5 ม.ค. 70"];
-const portDefaults=[300,100,125,100,125,100,125,100,125];
-const portLabels=["17 ส.ค. 69 — ก้อนประเดิม","1 ก.ย. 69","16 ก.ย. 69","1 ต.ค. 69","16 ต.ค. 69","1 พ.ย. 69","16 พ.ย. 69","1 ธ.ค. 69","16 ธ.ค. 69 — งวดสุดท้าย"];
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const DOC_REF=doc(db,"financial_plans","plan_2569");
+
+const debtIds=["debt-1","debt-2","debt-3","debt-4","debt-5"];
+const portIds=["port-1","port-2","port-3","port-4","port-5","port-6","port-7","port-8","port-9"];
+const ASSETS=[
+ {key:"SCHD",pct:.25},{key:"VXUS",pct:.25},{key:"MSFT",pct:.10},
+ {key:"NVDA",pct:.10},{key:"GOOGL",pct:.10},{key:"TSM",pct:.10},{key:"AAPL",pct:.10}
+];
+const LOCAL_KEY="financial_plan_2569_backup_v2";
+let state={},amounts={},saveTimer=null,ignoreRemote=false;
 
 const $=id=>document.getElementById(id);
-const stateKey="financial-plan-2569-v1";
-let state=loadLocal();
+const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtUsd=n=>Number(n||0).toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
 
-function loadLocal(){
-  try{return JSON.parse(localStorage.getItem(stateKey))||{}}catch{return {}}
+function defaultAmounts(){
+ const o={};
+ document.querySelectorAll(".amt-input").forEach(i=>o[i.id.replace("amt-","")]=i.defaultValue);
+ return o;
 }
 function saveLocal(){
-  localStorage.setItem(stateKey,JSON.stringify(state));
-  if(window.__fbSave) window.__fbSave(state);
+ localStorage.setItem(LOCAL_KEY,JSON.stringify({
+   state,amounts,goal:$("portGoalInput").value,updatedAt:new Date().toISOString()
+ }));
 }
-function num(v){return Number.isFinite(Number(v))?Number(v):0}
-function money(v){return num(v).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2})}
-function makeCheckSvg(){return '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-6" stroke="#0A1420" stroke-width="2" fill="none"/></svg>'}
-
-function render(){
-  const debt=state.debtAmounts||debtDefaults;
-  const ports=state.portAmounts||portDefaults;
-  const debtChecked=state.debtChecked||{};
-  const portChecked=state.portChecked||{};
-  const goal=num(state.portGoal??1200)||1200;
-
-  $("debtItems").innerHTML=debt.map((amt,i)=>`
-    <div class="item debt-item ${debtChecked["debt-"+(i+1)]?"checked":""}" data-id="debt-${i+1}">
-      <div class="box">${makeCheckSvg()}</div>
-      <div><div class="item-label">งวดที่ ${i+1}${i===4?" (งวดสุดท้าย)":""}</div><div class="item-sub">${debtDates[i]}</div></div>
-      <div class="amt-wrap out"><span>−</span><input type="number" class="amt-input" id="amt-debt-${i+1}" value="${amt}" step="0.01" inputmode="decimal"></div>
-    </div>`).join("");
-
-  $("portItems").innerHTML=ports.map((amt,i)=>`
-    <div class="port-block">
-      <div class="item port-item ${portChecked["port-"+(i+1)]?"checked":""}" data-id="port-${i+1}">
-        <div class="box">${makeCheckSvg()}</div>
-        <div><div class="item-label">${portLabels[i]}</div><div class="item-sub" id="cum-port-${i+1}"></div></div>
-        <div class="amt-wrap in"><span>+</span><input type="number" class="amt-input" id="amt-port-${i+1}" value="${amt}" step="0.01" inputmode="decimal"></div>
-      </div>
-      <div class="alloc-mini" id="alloc-port-${i+1}"></div>
-    </div>`).join("");
-
-  $("portGoalInput").value=goal;
-  bind();
-  recalc();
+function loadLocal(){
+ try{
+   const d=JSON.parse(localStorage.getItem(LOCAL_KEY));
+   if(!d)return false;
+   state=d.state||{};amounts=d.amounts||{};
+   if(d.goal!==undefined)$("portGoalInput").value=d.goal;
+   document.querySelectorAll(".amt-input").forEach(i=>{
+     const id=i.id.replace("amt-","");
+     if(amounts[id]!==undefined)i.value=amounts[id];
+   });
+   return true;
+ }catch{return false}
 }
-function bind(){
-  document.querySelectorAll(".item").forEach(el=>{
-    el.addEventListener("click",e=>{
-      if(e.target.closest("input"))return;
-      const id=el.dataset.id;
-      const target=id.startsWith("debt-")?(state.debtChecked||(state.debtChecked={} )):(state.portChecked||(state.portChecked={}));
-      target[id]=!target[id];
-      saveLocal();render();
-    });
-  });
-  document.querySelectorAll(".amt-input").forEach(input=>{
-    input.addEventListener("input",()=>{
-      const [kind,index]=input.id.split("-");
-      const i=num(index)-1;
-      if(kind==="amt"){
-        if(input.id.startsWith("amt-debt-")){state.debtAmounts=[...(state.debtAmounts||debtDefaults)];state.debtAmounts[i]=num(input.value)}
-        else{state.portAmounts=[...(state.portAmounts||portDefaults)];state.portAmounts[i]=num(input.value)}
-      }
-      saveLocal();recalc();
-    });
-  });
-  $("portGoalInput").addEventListener("input",()=>{
-    state.portGoal=num($("portGoalInput").value)||0;saveLocal();recalc();
-  });
+function renderAlloc(id){
+ const el=$("alloc-"+id);if(!el)return;
+ const amt=Number(amounts[id]||0);
+ el.innerHTML=`<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`+
+ ASSETS.map(a=>`<div class="alloc-mini-row"><span class="alloc-mini-name">${a.key}</span><span class="alloc-mini-pct">${a.pct*100}%</span><span class="alloc-mini-usd">${fmtUsd(amt*a.pct)}</span></div>`).join("");
 }
-function recalc(){
-  const debt=state.debtAmounts||debtDefaults;
-  const ports=state.portAmounts||portDefaults;
-  const debtChecked=state.debtChecked||{};
-  const portChecked=state.portChecked||{};
-  const totalDebt=debt.reduce((a,b)=>a+num(b),0);
-  const paidDebt=debt.reduce((a,b,i)=>a+(debtChecked["debt-"+(i+1)]?num(b):0),0);
-  const remaining=Math.max(0,totalDebt-paidDebt);
-  const portCum=ports.reduce((a,b,i)=>a+(portChecked["port-"+(i+1)]?num(b):0),0);
-  const goal=num(state.portGoal??1200)||1200;
-  $("debtLabel").textContent=money(remaining)+" บาท";
-  $("debtBar").style.width=Math.min(100,totalDebt?paidDebt/totalDebt*100:0)+"%";
-  $("portCumLabel").textContent=portCum.toLocaleString("en-US",{maximumFractionDigits:2});
-  $("portBar").style.width=Math.min(100,goal?portCum/goal*100:0)+"%";
-  ports.forEach((amt,i)=>{
-    const cum=ports.slice(0,i+1).reduce((a,b)=>a+num(b),0);
-    const sub=$("cum-port-"+(i+1)); if(sub)sub.textContent="สะสม "+cum.toLocaleString("en-US",{maximumFractionDigits:2})+" USD";
-    const box=$("alloc-port-"+(i+1));
-    if(box)box.innerHTML=allocationHtml(num(amt));
-  });
-  const debtPct=totalDebt?paidDebt/totalDebt:0;
-  const portPct=goal?Math.min(1,portCum/goal):0;
-  $("finaleNum").textContent=Math.round((debtPct+portPct)/2*100)+"%";
+function recompute(){
+ let debtTotal=0,debtPaid=0;
+ debtIds.forEach(id=>{
+   const a=Number(amounts[id]||0);debtTotal+=a;if(state[id])debtPaid+=a;
+ });
+ $("debtLabel").textContent=fmt(Math.max(0,debtTotal-debtPaid))+" บาท";
+ $("debtBar").style.width=(debtTotal?Math.min(100,debtPaid/debtTotal*100):0)+"%";
+
+ let running=0,checkedCum=0;
+ portIds.forEach(id=>{
+   const a=Number(amounts[id]||0);running+=a;
+   const sub=$("cum-"+id);if(sub)sub.textContent="สะสม "+fmtUsd(running)+" USD";
+   if(state[id])checkedCum=running;
+   renderAlloc(id);
+ });
+ const goal=Number($("portGoalInput").value||0);
+ $("portCumLabel").textContent=fmtUsd(checkedCum);
+ $("portBar").style.width=(goal?Math.min(100,checkedCum/goal*100):0)+"%";
+
+ const items=document.querySelectorAll(".item[data-id]");
+ items.forEach(el=>el.classList.toggle("checked",!!state[el.dataset.id]));
+ const count=[...items].filter(el=>state[el.dataset.id]).length;
+ $("finaleNum").textContent=Math.round(count/items.length*100)+"%";
 }
-function allocationHtml(amount){
-  const rows=[["SCHD","25%"],["VXUS","25%"],["MSFT","10%"],["NVDA","10%"],["GOOGL","10%"],["TSM","10%"],["AAPL","10%"]];
-  return `<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`+
-    rows.map(([n,p])=>`<div class="alloc-mini-row"><span class="alloc-mini-name">${n}</span><span class="alloc-mini-pct">${p}</span><span class="alloc-mini-usd">${(amount*parseFloat(p)/100).toFixed(2)}</span></div>`).join("");
+function setSync(mode,text){
+ $("syncDot").className="sync-dot "+(mode||"");
+ $("syncText").textContent=text;
+}
+async function push(){
+ saveLocal();
+ try{
+   await setDoc(DOC_REF,{
+     state,amounts,goal:$("portGoalInput").value,
+     updatedAt:new Date().toISOString()
+   },{merge:true});
+   setSync("online","ซิงก์ Firebase แล้ว · ใช้ข้อมูลเดียวกันข้ามเครื่อง");
+ }catch(e){
+   console.warn(e);setSync("offline","ออฟไลน์ · บันทึกไว้ในเครื่อง และจะซิงก์เมื่อออนไลน์");
+ }
+}
+function debouncePush(){
+ saveLocal();clearTimeout(saveTimer);saveTimer=setTimeout(push,500);
 }
 
-$("resetBtn").addEventListener("click",()=>{
-  if(!confirm("คืนค่าตัวเลขและเช็คลิสต์ทั้งหมดเป็นค่าเริ่มต้นใช่ไหม?"))return;
-  state={};saveLocal();render();
+document.querySelectorAll(".item[data-id]").forEach(el=>{
+ el.addEventListener("click",e=>{
+   if(e.target.closest("input"))return;
+   state[el.dataset.id]=!state[el.dataset.id];
+   recompute();push();
+ });
+});
+document.querySelectorAll(".amt-input").forEach(inp=>{
+ inp.addEventListener("click",e=>e.stopPropagation());
+ inp.addEventListener("input",()=>{
+   amounts[inp.id.replace("amt-")]=inp.value;
+   recompute();debouncePush();
+ });
+});
+$("portGoalInput").addEventListener("input",()=>{recompute();debouncePush()});
+
+$("resetBtn").addEventListener("click",async()=>{
+ if(!confirm("ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมดกลับเป็นค่าเริ่มต้น? ข้อมูลบนคลาวด์จะถูกล้างด้วย"))return;
+ state={};amounts=defaultAmounts();
+ document.querySelectorAll(".amt-input").forEach(i=>i.value=i.defaultValue);
+ $("portGoalInput").value=$("portGoalInput").defaultValue;
+ recompute();await push();
 });
 
-render();
+loadLocal();
+if(Object.keys(amounts).length===0)amounts=defaultAmounts();
+recompute();
 
-/* Firebase: ใช้ Firestore เมื่อ config มี appId/messagingSenderId ครบ
-   หากยังไม่ครบ ระบบจะใช้ localStorage เพื่อให้ไฟล์เปิดและใช้งานได้ทันที */
-(async()=>{
-  try{
-    if(!FIREBASE_CONFIG.appId||!FIREBASE_CONFIG.messagingSenderId) return;
-    const {initializeApp}=await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js");
-    const {getFirestore,doc,onSnapshot,setDoc}=await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js");
-    const app=initializeApp(FIREBASE_CONFIG), db=getFirestore(app);
-    const ref=doc(db,"financialPlans","main");
-    let remoteReady=false;
-    onSnapshot(ref,snap=>{
-      if(snap.exists()&&!remoteReady){state=snap.data();localStorage.setItem(stateKey,JSON.stringify(state));render()}
-      remoteReady=true;
-    });
-    window.__fbSave=async data=>{try{await setDoc(ref,data)}catch(e){console.warn("Firebase save failed",e)}};
-  }catch(e){console.warn("Firebase unavailable; localStorage remains active.",e)}
-})();
+try{
+ await enableIndexedDbPersistence(db);
+}catch(e){
+ if(e.code==="failed-precondition")console.warn("Firestore offline persistence: multiple tabs");
+ else if(e.code==="unimplemented")console.warn("Firestore offline persistence unsupported");
+}
+
+onSnapshot(DOC_REF,async snap=>{
+ if(ignoreRemote)return;
+ if(snap.exists()){
+   const d=snap.data();
+   state=d.state||{};amounts=d.amounts||{};
+   if(d.goal!==undefined)$("portGoalInput").value=d.goal;
+   document.querySelectorAll(".amt-input").forEach(i=>{
+     const id=i.id.replace("amt-","");
+     if(amounts[id]!==undefined)i.value=amounts[id];
+   });
+   saveLocal();recompute();
+   setSync(navigator.onLine?"online":"offline",navigator.onLine?"ออนไลน์ · ซิงก์ข้อมูลแบบเรียลไทม์":"ออฟไลน์ · ข้อมูลจะซิงก์เมื่อกลับมาออนไลน์");
+ }else{
+   amounts=Object.keys(amounts).length?amounts:defaultAmounts();
+   recompute();await push();
+ }
+},err=>{
+ console.error("Firestore listener:",err);
+ setSync("offline","เชื่อมต่อ Firebase ไม่สำเร็จ · ใช้ข้อมูลออฟไลน์");
+});
+
+window.addEventListener("online",()=>{setSync("online","กลับมาออนไลน์ · กำลังซิงก์...");push()});
+window.addEventListener("offline",()=>setSync("offline","ออฟไลน์ · ข้อมูลถูกเก็บไว้และรอซิงก์"));
+
+if("serviceWorker" in navigator){
+ window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+}
+if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
 </script>
 </body>
 </html>
