@@ -14,10 +14,6 @@
 <link rel="icon" href="icon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
 <style>
   :root{
     --bg:#0A1420;
@@ -41,6 +37,7 @@
     padding:24px 16px 60px;
   }
   .wrap{max-width:640px; margin:0 auto;}
+
   header{margin-bottom:28px;}
   .eyebrow{
     font-family:'JetBrains Mono', monospace;
@@ -58,6 +55,7 @@
     margin-bottom:4px;
   }
   .sub{color:var(--text-dim); font-size:14px;}
+
   .handoff{
     margin-top:22px;
     background:var(--surface);
@@ -95,6 +93,7 @@
     text-align:center; font-family:'JetBrains Mono',monospace; font-size:10px;
     color:var(--gold); letter-spacing:.08em; margin:10px 0 4px; opacity:.85;
   }
+
   .phase{margin-top:26px;}
   .phase-head{display:flex; align-items:center; gap:10px; margin-bottom:12px;}
   .phase-num{
@@ -106,6 +105,7 @@
   }
   .phase-title{font-family:'Kanit', sans-serif; font-weight:600; font-size:16px;}
   .phase-dates{font-size:12px; color:var(--text-dim); margin-left:auto; font-family:'JetBrains Mono',monospace;}
+
   .card{
     background:var(--surface);
     border:1px solid var(--border);
@@ -123,6 +123,7 @@
     color:var(--gold); border:1px solid rgba(232,185,77,.35);
     padding:2px 6px; border-radius:20px;
   }
+
   .item{
     display:flex; align-items:center; gap:12px;
     padding:10px 14px;
@@ -142,8 +143,17 @@
   .item.checked .box svg{opacity:1; transform:scale(1);}
   .item.checked .item-label{color:var(--text-dim); text-decoration:line-through; text-decoration-color:var(--border);}
   .item.debt-item.checked .box{background:var(--debt); border-color:var(--debt);}
+
   .item-label{font-size:14px; flex:1; line-height:1.4;}
   .item-sub{font-size:11px; color:var(--text-dim); margin-top:2px;}
+  .item-amt{
+    font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
+    white-space:nowrap;
+  }
+  .item-amt.out{color:var(--debt);}
+  .item-amt.in{color:var(--growth);}
+  .item-amt.neutral{color:var(--text-dim);}
+
   .amt-wrap{
     display:flex; align-items:center; gap:2px;
     font-family:'JetBrains Mono',monospace; font-size:13px; font-weight:500;
@@ -161,9 +171,13 @@
     -webkit-appearance:none; margin:0;
   }
   .amt-input:focus{outline:1.5px solid var(--gold); border-color:var(--gold);}
+
   .port-block{border-top:1px solid var(--border);}
   .port-block:first-child{border-top:none;}
-  .alloc-mini{padding:2px 14px 12px 46px;}
+  .port-block .item{border-top:none;}
+  .alloc-mini{
+    padding:2px 14px 12px 46px;
+  }
   .alloc-mini-head{
     display:grid; grid-template-columns:1fr 48px 90px;
     gap:6px; font-size:9px; color:var(--text-dim); opacity:.7;
@@ -181,12 +195,23 @@
   .alloc-mini-name{font-family:'Kanit',sans-serif; font-weight:500;}
   .alloc-mini-pct{color:var(--text-dim); font-size:11px; text-align:right;}
   .alloc-mini-usd{font-family:'JetBrains Mono',monospace; color:var(--gold); text-align:right; font-weight:500;}
+
   .status-line{
     padding:12px 14px; border-top:1px dashed var(--border);
     font-size:13px; display:flex; justify-content:space-between; align-items:center;
   }
   .status-line b{font-family:'JetBrains Mono',monospace; font-size:14px;}
+
   .alloc{margin-top:2px; padding:4px 14px 12px;}
+  .alloc-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:7px 0; border-top:1px solid var(--border); font-size:13px;
+  }
+  .alloc-row:first-child{border-top:none;}
+  .alloc-name{font-family:'Kanit',sans-serif; font-weight:500;}
+  .alloc-pct{color:var(--text-dim); font-size:11px; margin-left:6px;}
+  .alloc-val{font-family:'JetBrains Mono',monospace; color:var(--growth);}
+
   .finale{
     margin-top:28px;
     background:linear-gradient(160deg, var(--surface-2), var(--surface));
@@ -205,6 +230,7 @@
     font-size:12px; color:var(--text-dim); text-align:left; line-height:1.9;
   }
   .finale-goal b{color:var(--gold); font-family:'JetBrains Mono',monospace;}
+
   .reset-row{text-align:center; margin-top:22px;}
   .reset-btn{
     background:none; border:1px solid var(--border); color:var(--text-dim);
@@ -220,7 +246,7 @@
   <header>
     <div class="eyebrow">Financial Plan · 2569</div>
     <h1>แผนการเงินและการลงทุน<br>ส.ค. – ธ.ค. 2569</h1>
-    <div class="sub">แตะรายการเพื่อติ๊กเมื่อทำสำเร็จ — บันทึกออนไลน์อัตโนมัติ</div>
+    <div class="sub">แตะรายการเพื่อติ๊กเมื่อทำสำเร็จ — บันทึกอัตโนมัติ</div>
 
     <div class="handoff">
       <div class="handoff-row">
@@ -238,6 +264,7 @@
     </div>
   </header>
 
+  <!-- PHASE 1: DEBT -->
   <section class="phase">
     <div class="phase-head">
       <div class="phase-num">1</div>
@@ -256,6 +283,7 @@
     </div>
   </section>
 
+  <!-- PHASE 2: PORTFOLIO -->
   <section class="phase">
     <div class="phase-head">
       <div class="phase-num">2</div>
@@ -324,97 +352,188 @@
 
   <div class="reset-row"><button class="reset-btn" id="resetBtn">ล้างเช็คลิสต์ + ตัวเลขทั้งหมด (คืนค่าเริ่มต้น)</button></div>
 
-          </div>
-<!-- ========================================== -->
-<!-- โค้ดส่วนที่ 2: สคริปต์เชื่อมต่อ Firebase (ฉบับแก้ไข) -->
-<!-- ========================================== -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+</div>
 
 <script>
-  // 1. ตั้งค่า Firebase Configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyC4zsLz5rGQ2XLRJ4Im2OowhDhfV-idIbo",
-    authDomain: "project-3318142053107447191.firebaseapp.com",
-    databaseURL: "https://project-3318142053107447191-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "project-3318142053107447191",
-    storageBucket: "project-3318142053107447191.firebasestorage.app",
-    messagingSenderId: "39403402202",
-    appId: "1:39403402202:web:a1979d39a0a5617a3406e3"
-  };
+const STORAGE_KEY = 'financial-plan-2569-checklist';
+const AMT_KEY = 'financial-plan-2569-amounts';
+const GOAL_KEY = 'financial-plan-2569-goal';
+const items = Array.from(document.querySelectorAll('.item[data-id]'));
+const debtIds = ['debt-1','debt-2','debt-3','debt-4','debt-5'];
+const portIds = ['port-1','port-2','port-3','port-4','port-5','port-6','port-7','port-8','port-9'];
+const portDates = {
+  'port-1':'17 ส.ค. 69 — ก้อนประเดิม','port-2':'1 ก.ย. 69','port-3':'16 ก.ย. 69',
+  'port-4':'1 ต.ค. 69','port-5':'16 ต.ค. 69','port-6':'1 พ.ย. 69',
+  'port-7':'16 พ.ย. 69','port-8':'1 ธ.ค. 69','port-9':'16 ธ.ค. 69 — งวดสุดท้าย'
+};
+const ASSETS = [
+  {key:'SCHD', pct:0.25}, {key:'VXUS', pct:0.25},
+  {key:'MSFT', pct:0.10}, {key:'NVDA', pct:0.10}, {key:'GOOGL', pct:0.10},
+  {key:'TSM', pct:0.10}, {key:'AAPL', pct:0.10}
+];
 
-  // 2. เริ่มต้นเชื่อมต่อ Firebase Realtime Database
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-  const dbRef = database.ref('financial-plan-2569');
+let state = {};   // checked state per item id
+let amounts = {}; // current amount per item id
 
-  // 3. ดึงองค์ประกอบ DOM
-  const inputs = document.querySelectorAll('input[type="number"], input[type="checkbox"]');
-  const resetBtn = document.getElementById('resetBtn');
+function fmt2(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+function fmt0(n){ return Math.round(n).toLocaleString(); }
+function fmtUsd(n){ return n.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
 
-  // Function สำหรับดึงข้อมูลปัจจุบันบนหน้าเว็บ
-  function getFormData() {
-    const data = {};
-    inputs.forEach(input => {
-      if (input.type === 'checkbox') {
-        data[input.id] = input.checked;
-      } else {
-        data[input.id] = input.value;
-      }
-    });
-    return data;
-  }
+function getAmt(id, fallback){
+  const v = parseFloat(amounts[id]);
+  return isNaN(v) ? fallback : v;
+}
 
-  // Function สำหรับแสดงข้อมูลจาก Firebase ลงบนหน้าเว็บ
-  function setFormData(data) {
-    if (!data) return;
-    inputs.forEach(input => {
-      if (data.hasOwnProperty(input.id)) {
-        if (input.type === 'checkbox') {
-          input.checked = data[input.id];
-        } else {
-          input.value = data[input.id];
-        }
-      }
-    });
-    // เรียกฟังก์ชันคำนวณยอดรวม (ถ้ามีในส่วนที่ 1)
-    if (typeof calculateTotals === 'function') {
-      calculateTotals();
-    }
-  }
+function renderAllocFor(id){
+  const amt = getAmt(id, 0);
+  const el = document.getElementById('alloc-' + id);
+  if(!el) return;
+  const head = `<div class="alloc-mini-head"><span>สินทรัพย์</span><span>%</span><span>USD</span></div>`;
+  const rows = ASSETS.map(a=>{
+    const val = amt * a.pct;
+    return `<div class="alloc-mini-row">
+      <span class="alloc-mini-name">${a.key}</span>
+      <span class="alloc-mini-pct">${Math.round(a.pct*100)}%</span>
+      <span class="alloc-mini-usd">${fmtUsd(val)}</span>
+    </div>`;
+  }).join('');
+  el.innerHTML = head + rows;
+}
 
-  // 4. อ่านข้อมูลจาก Firebase แบบ Realtime (ซิงค์ทันทีเมื่อมีการเปลี่ยนแปลง)
-  dbRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      setFormData(data);
-    }
-  }, (error) => {
-    console.error("Firebase Read Error:", error);
+function recomputeDebt(){
+  let total = 0, paid = 0;
+  debtIds.forEach(id=>{
+    const amt = getAmt(id, 0);
+    total += amt;
+    if(state[id]) paid += amt;
   });
+  const remaining = Math.max(0, total - paid);
+  const pct = total ? Math.min(100, (paid/total)*100) : 0;
+  document.getElementById('debtBar').style.width = (100-pct) + '%';
+  document.getElementById('debtLabel').textContent = fmt2(remaining) + ' บาท';
+}
 
-  // 5. บันทึกข้อมูลขึ้น Firebase เมื่อมีการแก้ไขช่อง Input
-  inputs.forEach(input => {
-    input.addEventListener('input', () => {
-      dbRef.set(getFormData());
-    });
-    input.addEventListener('change', () => {
-      dbRef.set(getFormData());
-    });
+function recomputePortfolio(){
+  let running = 0, checkedCum = 0;
+  portIds.forEach(id=>{
+    const amt = getAmt(id, 0);
+    running += amt;
+    const subEl = document.getElementById('cum-' + id);
+    if(subEl) subEl.textContent = 'สะสม ' + fmtUsd(running) + ' USD';
+    if(state[id]) checkedCum = running;
+    renderAllocFor(id);
   });
+  const goalInput = document.getElementById('portGoalInput');
+  const goal = parseFloat(goalInput.value) || 0;
+  const pct = goal ? Math.min(100, (checkedCum/goal)*100) : 0;
+  document.getElementById('portBar').style.width = pct + '%';
+  document.getElementById('portCumLabel').textContent = fmtUsd(checkedCum);
+}
 
-  // 6. ปุ่ม Reset ล้างค่า
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (confirm('คุณต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?')) {
-        dbRef.remove()
-          .then(() => {
-            location.reload();
-          })
-          .catch((error) => {
-            console.error("Reset Error:", error);
-          });
-      }
-    });
-  }
+function computeAndRender(){
+  recomputeDebt();
+  recomputePortfolio();
+  const totalItems = items.length;
+  const checkedCount = items.filter(el=>state[el.dataset.id]).length;
+  const overall = totalItems ? Math.round((checkedCount/totalItems)*100) : 0;
+  document.getElementById('finaleNum').textContent = overall + '%';
+}
+
+function applyVisual(){
+  items.forEach(el=>{
+    if(state[el.dataset.id]) el.classList.add('checked');
+    else el.classList.remove('checked');
+  });
+  computeAndRender();
+}
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){ state = JSON.parse(raw); }
+  }catch(e){ state = {}; }
+  try{
+    const rawAmt = localStorage.getItem(AMT_KEY);
+    if(rawAmt){ amounts = JSON.parse(rawAmt); }
+  }catch(e){ amounts = {}; }
+  // sync input fields with saved amounts (if any)
+  document.querySelectorAll('.amt-input').forEach(inp=>{
+    const id = inp.id.replace('amt-', '');
+    if(amounts[id] !== undefined){ inp.value = amounts[id]; }
+    else { amounts[id] = inp.value; }
+  });
+  try{
+    const rawGoal = localStorage.getItem(GOAL_KEY);
+    if(rawGoal !== null){ document.getElementById('portGoalInput').value = rawGoal; }
+  }catch(e){}
+  applyVisual();
+}
+
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ console.error('save failed', e); }
+}
+function saveAmounts(){
+  try{ localStorage.setItem(AMT_KEY, JSON.stringify(amounts)); }catch(e){ console.error('save failed', e); }
+}
+function saveGoal(){
+  try{ localStorage.setItem(GOAL_KEY, document.getElementById('portGoalInput').value); }catch(e){}
+}
+
+items.forEach(el=>{
+  el.addEventListener('click', (ev)=>{
+    if(ev.target.classList.contains('amt-input')) return;
+    const id = el.dataset.id;
+    state[id] = !state[id];
+    applyVisual();
+    saveState();
+  });
+});
+
+document.querySelectorAll('.amt-input').forEach(inp=>{
+  inp.addEventListener('click', (ev)=> ev.stopPropagation());
+  inp.addEventListener('input', ()=>{
+    const id = inp.id.replace('amt-', '');
+    amounts[id] = inp.value;
+    computeAndRender();
+    saveAmounts();
+  });
+});
+
+const goalInputEl = document.getElementById('portGoalInput');
+goalInputEl.addEventListener('click', (ev)=> ev.stopPropagation());
+goalInputEl.addEventListener('input', ()=>{
+  computeAndRender();
+  saveGoal();
+});
+
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  if(!confirm('ล้างเช็คลิสต์และตัวเลขที่แก้ไขทั้งหมด กลับเป็นค่าเริ่มต้น? การกระทำนี้ไม่สามารถย้อนกลับได้')) return;
+  state = {};
+  amounts = {};
+  document.querySelectorAll('.amt-input').forEach(inp=>{
+    inp.value = inp.defaultValue;
+    amounts[inp.id.replace('amt-', '')] = inp.value;
+  });
+  goalInputEl.value = goalInputEl.defaultValue;
+  applyVisual();
+  saveState();
+  saveAmounts();
+  saveGoal();
+});
+
+loadState();
+
+// PWA: register service worker for offline/installable support
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  });
+}
+
+// Ask the browser not to auto-evict this site's storage when device space is low
+if (navigator.storage && navigator.storage.persist) {
+  navigator.storage.persist().catch(()=>{});
+}
 </script>
+</body>
+</html>
