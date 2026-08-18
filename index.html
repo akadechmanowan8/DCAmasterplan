@@ -168,7 +168,7 @@ const ASSETS=[
  {key:"NVDA",pct:.10},{key:"GOOGL",pct:.10},{key:"TSM",pct:.10},{key:"AAPL",pct:.10}
 ];
 const LOCAL_KEY="financial_plan_2569_backup_v2";
-let state={},amounts={},saveTimer=null,ignoreRemote=false,localUpdatedAt=0,localRevision=0;
+let state={},amounts={},saveTimer=null,ignoreRemote=false,localUpdatedAt=0,localRevision=0,dirtyAmounts=new Set();
 
 const $=id=>document.getElementById(id);
 const fmt=n=>Number(n||0).toLocaleString("th-TH",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -181,7 +181,9 @@ function defaultAmounts(){
 }
 function saveLocal(){
  localStorage.setItem(LOCAL_KEY,JSON.stringify({
-   state,amounts,goal:$("portGoalInput").value,updatedAt:new Date().toISOString()
+   state,amounts,goal:$("portGoalInput").value,
+   updatedAt:new Date(localUpdatedAt || Date.now()).toISOString(),
+   revision:localRevision
  }));
 }
 function loadLocal(){
@@ -242,10 +244,13 @@ async function push(){
       updatedAt:new Date(writeTime).toISOString(),
       revision:localRevision
     },{merge:true});
-    setSync("online","ซิงก์ Firebase แล้ว · ใช้ข้อมูลเดียวกันข้ามเครื่อง");
+    dirtyAmounts.clear();
+    setSync("online","ซิงก์ Firebase แล้ว · บันทึกค่าล่าสุดแล้ว");
+    return true;
   }catch(e){
     console.warn(e);
     setSync("offline","ออฟไลน์ · บันทึกไว้ในเครื่อง และจะซิงก์เมื่อออนไลน์");
+    return false;
   }
 }
 
@@ -264,32 +269,47 @@ document.querySelectorAll(".amt-input").forEach(inp=>{
   inp.addEventListener("click",e=>e.stopPropagation());
   inp.addEventListener("pointerdown",e=>e.stopPropagation());
   inp.addEventListener("focus",e=>e.stopPropagation());
+
   inp.addEventListener("input",()=>{
     const id=inp.id.replace("amt-","");
+    dirtyAmounts.add(id);
     amounts[id]=inp.value;
     localRevision++;
     localUpdatedAt=Date.now();
     saveLocal();
     recompute();
-    debouncePush();
+    clearTimeout(saveTimer);
+    saveTimer=setTimeout(async()=>{
+      saveTimer=null;
+      await push();
+    },300);
   });
-  inp.addEventListener("change",()=>{
+
+  inp.addEventListener("change",async()=>{
     const id=inp.id.replace("amt-","");
+    dirtyAmounts.add(id);
     amounts[id]=inp.value;
     localRevision++;
     localUpdatedAt=Date.now();
     saveLocal();
     recompute();
-    push();
+    clearTimeout(saveTimer);
+    saveTimer=null;
+    await push();
   });
 });
 
 $("portGoalInput").addEventListener("input",()=>{
+  dirtyAmounts.add("__goal");
   localRevision++;
   localUpdatedAt=Date.now();
   saveLocal();
   recompute();
-  debouncePush();
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    saveTimer=null;
+    await push();
+  },300);
 });
 
 $("resetBtn").addEventListener("click",async()=>{
@@ -297,6 +317,8 @@ $("resetBtn").addEventListener("click",async()=>{
  state={};amounts=defaultAmounts();
  document.querySelectorAll(".amt-input").forEach(i=>i.value=i.defaultValue);
  $("portGoalInput").value=$("portGoalInput").defaultValue;
+ localRevision++;
+ localUpdatedAt=Date.now();
  recompute();await push();
 });
 
@@ -314,33 +336,40 @@ try{
 
 onSnapshot(DOC_REF,async snap=>{
   if(ignoreRemote)return;
+
   if(snap.exists()){
     const d=snap.data();
     const remoteUpdatedAt=d.updatedAt?Date.parse(d.updatedAt):0;
     const remoteRevision=Number(d.revision||0);
 
-    // Do not allow an equal/older Firebase snapshot to overwrite local edits.
-    if(localUpdatedAt && (
-      remoteUpdatedAt < localUpdatedAt ||
-      (remoteUpdatedAt === localUpdatedAt && remoteRevision <= localRevision)
-    )){
+    // Keep every locally edited amount while it is dirty.
+    if(remoteUpdatedAt < localUpdatedAt ||
+       (remoteUpdatedAt === localUpdatedAt && remoteRevision <= localRevision)){
       return;
     }
 
     state=d.state||{};
-    amounts=d.amounts||{};
-    if(d.goal!==undefined)$("portGoalInput").value=d.goal;
-    localUpdatedAt=remoteUpdatedAt||Date.now();
-    localRevision=remoteRevision;
+    const remoteAmounts=d.amounts||{};
 
-    document.querySelectorAll(".amt-input").forEach(i=>{
-      const id=i.id.replace("amt-","");
-      if(amounts[id]!==undefined)i.value=amounts[id];
+    Object.keys(remoteAmounts).forEach(id=>{
+      if(!dirtyAmounts.has(id)){
+        amounts[id]=remoteAmounts[id];
+        const input=$("amt-"+id);
+        if(input) input.value=remoteAmounts[id];
+      }
     });
+
+    if(d.goal!==undefined && !dirtyAmounts.has("__goal")){
+      $("portGoalInput").value=d.goal;
+    }
+
+    localUpdatedAt=remoteUpdatedAt || Date.now();
+    localRevision=Math.max(localRevision,remoteRevision);
     saveLocal();
     recompute();
+
     setSync(navigator.onLine?"online":"offline",
-      navigator.onLine?"ออนไลน์ · ซิงก์ข้อมูลแบบเรียลไทม์":"ออฟไลน์ · ข้อมูลจะซิงก์เมื่อกลับมาออนไลน์");
+      navigator.onLine?"ออนไลน์ · ซิงก์ข้อมูลแบบเรียลไทม์":"ออฟไลน์ · ใช้ค่าที่บันทึกในเครื่อง");
   }else{
     if(Object.keys(amounts).length===0)amounts=defaultAmounts();
     localUpdatedAt=Date.now();
@@ -349,8 +378,8 @@ onSnapshot(DOC_REF,async snap=>{
     await push();
   }
 
- console.error("Firestore listener:",err);
- setSync("offline","เชื่อมต่อ Firebase ไม่สำเร็จ · ใช้ข้อมูลออฟไลน์");
+  console.error("Firestore listener:",err);
+  setSync("offline","เชื่อมต่อ Firebase ไม่สำเร็จ · ใช้ข้อมูลออฟไลน์");
 });
 
 window.addEventListener("online",()=>{setSync("online","กลับมาออนไลน์ · กำลังซิงก์...");push()});
@@ -358,6 +387,9 @@ window.addEventListener("offline",()=>setSync("offline","ออฟไลน์ �
 
 if("serviceWorker" in navigator){
  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+if("serviceWorker" in navigator){
+ navigator.serviceWorker.getRegistrations().then(rs=>rs.forEach(r=>r.unregister())).catch(()=>{});
+}
 }
 if(navigator.storage?.persist)navigator.storage.persist().catch(()=>{});
 </script>
